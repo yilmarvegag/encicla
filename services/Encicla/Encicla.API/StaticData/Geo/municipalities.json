@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "name": "Barbosa"
+  },
+  {
+    "id": 2,
+    "name": "Bello"
+  },
+  {
+    "id": 3,
+    "name": "Caldas"
+  },
+  {
+    "id": 4,
+    "name": "Copacabana"
+  },
+  {
+    "id": 5,
+    "name": "Envigado"
+  },
+  {
+    "id": 6,
+    "name": "Girardota"
+  },
+  {
+    "id": 7,
+    "name": "Itagui"
+  },
+  {
+    "id": 8,
+    "name": "La Estrella"
+  },
+  {
+    "id": 9,
+    "name": "Medellin"
+  },
+  {
+    "id": 10,
+    "name": "Sabaneta"
+  }
+]
