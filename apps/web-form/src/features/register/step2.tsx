@@ -131,7 +131,7 @@ export function Step2() {
               setValue("signatureDataUrl", png, { shouldValidate: true })
             }
             onPdf={(file) =>
-              setValue("signedContract", file as any, { shouldValidate: true })
+              setValue("signedContract", file as File, { shouldValidate: true })
             }
           />
         </div>

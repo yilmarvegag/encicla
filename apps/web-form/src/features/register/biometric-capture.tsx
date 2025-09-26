@@ -1,5 +1,6 @@
 "use client";
 import { CameraIcon } from "@heroicons/react/16/solid";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -8,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 type FaceDetectorLike = {
   detect: (
     src: HTMLCanvasElement | HTMLVideoElement
-  ) => Promise<{ detections: any[] }>;
+  ) => Promise<{ detections: object[] }>;
   close?: () => void | Promise<void>;
 };
 
@@ -185,7 +186,7 @@ export function BiometricCapture({
         </div>
         {result && (
           <div className="rounded-xl border border-slate-700 p-2 bg-slate-900 flex justify-center">
-            <img
+            <Image
               src={result}
               alt="biometría"
               className="mt-2  rounded-md border border-slate-700"

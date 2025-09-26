@@ -43,6 +43,8 @@ export default function Page() {
 
   const onSubmit = async (values: any) => {
 
+    console.log("[FORM] Valid submit:", stepper.current.id);
+
     if (stepper.isLast) {
       // En el último paso, ya pasa por el schema de step3; enviamos TODO
       const ok = await submitAll(values);
@@ -56,6 +58,7 @@ export default function Page() {
       //validar si existe
       // 1) Validar existencia del documento en DB
       const { data, status } = await checkDocumentExists(values.documentNumber);
+      // console.log("Check document exists", { data, status });
       if (status == 200 && data) {
         form.setError("documentNumber", {
           type: "manual",
@@ -137,7 +140,7 @@ export default function Page() {
                   Atrás
                 </button>
               )}
-              <button type="submit" className="btn w-lg">
+              <button type="submit" className="btn w-lg cursor-pointer">
                 {stepper.isLast ? "Finalizar" : "Siguiente"}
               </button>
             </div>

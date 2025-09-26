@@ -8,6 +8,7 @@ import {
   DocumentArrowDownIcon,
   PhotoIcon,
 } from "@heroicons/react/24/outline";
+import Image from "next/image";
 
 type UploadName = "idDoc" | "passportFile" | "guardianId" | "authorizationLetter";
 
@@ -101,7 +102,7 @@ function UploadField({ name, label, accept, hint, maxSizeMB = 10 }: SpecItem) {
       return;
     }
 
-    setValue(name, f as any, { shouldValidate: true });
+    setValue(name, f as object, { shouldValidate: true });
     clearErrors(name);
     void trigger(name);
   }
@@ -169,7 +170,7 @@ function UploadField({ name, label, accept, hint, maxSizeMB = 10 }: SpecItem) {
 
         {/* Preview imagen */}
         {file && isImage(file) && previewUrl && (
-          <img
+          <Image
             src={previewUrl}
             alt="preview"
             className="absolute right-12 top-1/2 -translate-y-1/2 h-10 w-10 rounded-md object-cover border border-slate-700"
