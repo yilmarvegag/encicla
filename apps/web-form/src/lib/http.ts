@@ -1,6 +1,10 @@
 // apps/web-form/src/lib/http.ts
 const API = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://encicla-api-qa.onrender.com/api";
 
+if (!API) {
+  console.info("NEXT_PUBLIC_API_BASE_URL is not defined");  // Fallará en build si no está seteada
+}
+
 type FetchOptions = RequestInit & { timeoutMs?: number; signal?: AbortSignal };
 
 async function fetchWithTimeout(input: RequestInfo | URL, opts: FetchOptions = {}) {
