@@ -1,0 +1,22 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with: { dotnet-version: '8.0.x' }
+    - name: Build API
+      run: dotnet build services/Encicla/Encicla.API/Encicla.API.csproj
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with: { node-version: 20 }
+    - name: Install pnpm
+      run: corepack enable
+    - name: Install deps
+      run: pnpm install
+    - name: Build Web-Form
+      run: pnpm --filter=web-form build
+    # Agrega tests: dotnet test, pnpm test

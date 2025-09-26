@@ -1,0 +1,39 @@
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# ASP.NET Core environment files
+appsettings.*.json
+
+# Logs
+*.log
+
+# NuGet packages
+*.nupkg
+packages/
+.nuget/
+
+# Entity Framework migrations
+Migrations/
+
+# Rider IDE
+.idea/
+
+# Test results
+TestResults/
+*.trx
+
+# Others
+coverage/
+*.vs/
+.DS_Store
+Thumbs.db
