@@ -33,9 +33,9 @@ GeneratedFiles/
 *.userprefs
 
 # Docker
-Dockerfile*
-docker-compose*
-.dockerignore
+# Dockerfile*
+# docker-compose*
+# .dockerignore
 
 # Node.js / Next.js (global para apps)
 node_modules/
