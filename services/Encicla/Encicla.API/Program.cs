@@ -127,7 +127,8 @@ app.UseStaticFiles(new StaticFileOptions
     //RequestPath = "/static"
 });
 
-//var staticDataPath = Path.Combine(app.Environment.ContentRootPath, "StaticData");
+var staticDataPath = Path.Combine(app.Environment.ContentRootPath, "StaticData");
+Console.WriteLine($"Static Data Path: {staticDataPath}");
 //if (!Directory.Exists(staticDataPath))
 //{
 //    Directory.CreateDirectory(staticDataPath);
