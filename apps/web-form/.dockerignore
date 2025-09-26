@@ -1,0 +1,20 @@
+# deps / cache
+node_modules
+.pnp*
+.pnpm-store
+.npm
+.next/cache
+
+# builds
+.next
+out
+dist
+
+# VCS / IDE
+.git
+.gitignore
+.vscode
+.DS_Store
+
+# logs
+*.log
