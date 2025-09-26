@@ -66,7 +66,7 @@ builder.Services.AddCors(options =>
     {
         options.AddPolicy("QACorsPolicy", builder =>
         {
-            builder.WithOrigins("https://enicla.qa.net")  // Permite solo el frontend de QA
+            builder.WithOrigins("*.onrender.com")  // Permite solo el frontend de QA
                    .AllowAnyMethod()
                    .AllowAnyHeader();
         });
