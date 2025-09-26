@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import SignaturePad from "signature_pad";
-import { PDFDocument, rgb } from "pdf-lib";
+import { PDFDocument } from "pdf-lib";
 
 type Props = {
   onChange: (dataUrl: string) => void; // PNG de la firma

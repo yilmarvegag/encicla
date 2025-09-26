@@ -48,7 +48,7 @@ export function startRegistration(req: StartRegistrationReq) {
 }
 
 export type VerifyOtpReq = { email: string; code: string };
-export type VerifyOtpRes = ResponseAPI<{}>;
+export type VerifyOtpRes = ResponseAPI<boolean>;
 
 export function verifyOtp(req: VerifyOtpReq) {
   return post<VerifyOtpRes>(`/v1/registration/verify-otp`, {
@@ -67,7 +67,7 @@ export type SaveStep2Req = {
   // ids de archivos o nombres (mock)
   documents: string[];
 };
-export type SaveStep2Res = ResponseAPI<{ civicaValidated?: boolean }>;
+export type SaveStep2Res = ResponseAPI<boolean>;
 
 export function saveStep2(req: SaveStep2Req) {
   return post<SaveStep2Res>(`/v1/registration/${req.registrationId}/type`, {
@@ -91,7 +91,7 @@ export type SaveStep3Req = {
   emergencyPhone: string;
   emergencyKinship: string;
 };
-export type SaveStep3Res = ResponseAPI<{ status: string }>;
+export type SaveStep3Res = ResponseAPI<string>;
 
 export function saveStep3(req: SaveStep3Req) {
   return post<SaveStep3Res>(`/v1/registration/${req.registrationId}/extra`, {

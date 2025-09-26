@@ -120,11 +120,23 @@ app.UseAuthorization();
 //Middleware pipeline
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
+Console.WriteLine($"Content Root Path: {app.Environment.ContentRootPath}");
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "StaticData")),
     //RequestPath = "/static"
 });
+
+//var staticDataPath = Path.Combine(app.Environment.ContentRootPath, "StaticData");
+//if (!Directory.Exists(staticDataPath))
+//{
+//    Directory.CreateDirectory(staticDataPath);
+//}
+
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(staticDataPath),
+//});
 
 app.MapControllers();
 
