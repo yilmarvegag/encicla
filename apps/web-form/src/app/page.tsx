@@ -42,7 +42,6 @@ export default function Page() {
   const currentIndex = utils.getIndex(stepper.current.id);
 
   const onSubmit = async (values: any) => {
-
     console.log("[FORM] Valid submit:", stepper.current.id);
 
     if (stepper.isLast) {
@@ -67,12 +66,15 @@ export default function Page() {
         return; // detener avance
       }
       //enviar otp
-      const otp = await sendOtp(values.email);
-      console.log("OTP enviado", otp);
-      if (otp.data) {
-        stepper.next();
-        console.log("[FORM] Submit step:", stepper.current.id, values);
-      }
+      // const otp = await sendOtp(values.email);
+      setTimeout(async () => {
+        const otp = await sendOtp(values.email);
+      }, 2000); // simular que llegó el OTP
+      // console.log("OTP enviado", otp);
+      // if (otp.data) {
+      stepper.next();
+      //   console.log("[FORM] Submit step:", stepper.current.id, values);
+      // }
     } else {
       stepper.next();
     }
