@@ -1,27 +1,16 @@
 // apps/web-form/src/lib/api.ts
-import { get, post } from "./http";
-
-// Envoltorio que usa tu API (según muestras)
-export type ResponseAPI<T> = {
-  type?: string;
-  title?: string;
-  status?: number;
-  instance?: string;
-  message?: string;
-  data: T;
-  errors?: unknown[];
-};
-
+import { ResponseData } from "@/types/api.type";
+import { apiService } from "./api.service";
 // ---------- STEP 1 ----------
 
 export function checkDocumentExists(documentNumber: string) {
-  return post<ResponseAPI<boolean>>(`/v1/registration/validate-document`, {
+  return apiService.post<ResponseData<boolean>>(`/v1/registration/validate-document`, {
     DocumentNumber: documentNumber,
   });
 }
 
 export function sendOtp(email: string) {
-  return post<ResponseAPI<boolean>>(`/v1/otp/send`, {
+  return apiService.post<ResponseData<boolean>>(`/v1/otp/send`, {
     email: email,
   });
 }
@@ -32,10 +21,10 @@ export type StartRegistrationReq = {
   email: string; phone: string;
   habeas: boolean; terms: boolean;
 };
-export type StartRegistrationRes = ResponseAPI<{ registrationId: string }>;
+export type StartRegistrationRes = ResponseData<{ registrationId: string }>;
 
 export function startRegistration(req: StartRegistrationReq) {
-  return post<StartRegistrationRes>(`/v1/registration/start`, {
+  return apiService.post<StartRegistrationRes>(`/v1/registration/start`, {
     FirstName: req.firstName,
     LastName: req.lastName,
     DocumentType: req.documentType,
@@ -48,10 +37,10 @@ export function startRegistration(req: StartRegistrationReq) {
 }
 
 export type VerifyOtpReq = { email: string; code: string };
-export type VerifyOtpRes = ResponseAPI<boolean>;
+export type VerifyOtpRes = ResponseData<boolean>;
 
 export function verifyOtp(req: VerifyOtpReq) {
-  return post<VerifyOtpRes>(`/v1/registration/verify-otp`, {
+  return apiService.post<VerifyOtpRes>(`/v1/registration/verify-otp`, {
     Email: req.email,
     Code: req.code,
   });
@@ -67,10 +56,10 @@ export type SaveStep2Req = {
   // ids de archivos o nombres (mock)
   documents: string[];
 };
-export type SaveStep2Res = ResponseAPI<boolean>;
+export type SaveStep2Res = ResponseData<boolean>;
 
 export function saveStep2(req: SaveStep2Req) {
-  return post<SaveStep2Res>(`/v1/registration/${req.registrationId}/type`, {
+  return apiService.post<SaveStep2Res>(`/v1/registration/${req.registrationId}/type`, {
     UserType: req.userType,
     HasCivicaPersonalizada: req.hasCivica,
     CivicaNumber: req.civicaNumber ?? null,
@@ -91,10 +80,10 @@ export type SaveStep3Req = {
   emergencyPhone: string;
   emergencyKinship: string;
 };
-export type SaveStep3Res = ResponseAPI<string>;
+export type SaveStep3Res = ResponseData<string>;
 
 export function saveStep3(req: SaveStep3Req) {
-  return post<SaveStep3Res>(`/v1/registration/${req.registrationId}/extra`, {
+  return apiService.post<SaveStep3Res>(`/v1/registration/${req.registrationId}/extra`, {
     Address: req.address,
     MunicipioId: String(req.municipioId), // si tu API recibe nombre, cambia aquí
     Comuna: req.comuna ?? null,
@@ -109,10 +98,10 @@ export function saveStep3(req: SaveStep3Req) {
 // ---------- Catálogos ----------
 export type Municipality = { id: number; name: string };
 export function getMunicipalities() {
-  return get<ResponseAPI<Municipality[]>>(`/v1/municipality`);
+  return apiService.get<ResponseData<Municipality[]>>(`/v1/municipality`);
 }
 
 export type Neighborhood = { id: number; idMunicipality: number; name: string; commune: string };
 export function getNeighborhoods(municipalityId: number | string) {
-  return get<ResponseAPI<Neighborhood[]>>(`/v1/municipality/${encodeURIComponent(String(municipalityId))}/neighborhoods`);
+  return apiService.get<ResponseData<Neighborhood[]>>(`/v1/municipality/${encodeURIComponent(String(municipalityId))}/neighborhoods`);
 }
