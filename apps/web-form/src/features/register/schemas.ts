@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { COMP1_OPTIONS, LETRA_OPTIONS } from "../utils/address";
+import { COMP1_OPTIONS, LETRA_OPTIONS } from "../../utils/address";
 
 /* STEP 1 */
 const emailField = z

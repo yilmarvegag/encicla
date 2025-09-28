@@ -13,7 +13,7 @@ import {
   IdentificationIcon,
   UserCircleIcon,
 } from "@heroicons/react/16/solid";
-import { checkDocumentExists, sendOtp } from "@/lib/api";
+import { checkDocumentExists, sendOtp } from "@/lib/form.service";
 
 // Submit final simulado
 async function submitAll(values: any) {
@@ -30,11 +30,10 @@ export default function Page() {
     resolver: zodResolver(stepper.current.schema),
     shouldUnregister: false, // mantener datos de todos los steps
     defaultValues: {
-      otpVerified: false,
       contractAccepted: false,
       documentType: "Cédula de Ciudadanía",
       userType: "Residente",
-      hasCivica: true,
+      hasCivica: false,
       ocupacion: "Funcionario Público",
     } as any,
   });
@@ -69,6 +68,7 @@ export default function Page() {
       // const otp = await sendOtp(values.email);
       setTimeout(async () => {
         const otp = await sendOtp(values.email);
+        console.log("OTP enviado", otp);
       }, 2000); // simular que llegó el OTP
       // console.log("OTP enviado", otp);
       // if (otp.data) {

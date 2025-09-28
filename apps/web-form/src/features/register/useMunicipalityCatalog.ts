@@ -1,7 +1,7 @@
 // apps/web-form/src/features/register/useMunicipalityCatalog.ts
 "use client";
 import useSWR from "swr";
-import { getMunicipalities, getNeighborhoods, type Municipality, type Neighborhood } from "@/lib/api";
+import { getMunicipalities, getNeighborhoods, type Municipality, type Neighborhood } from "@/lib/form.service";
 
 export function useMunicipalities() {
   const { data, error, isLoading } = useSWR<Municipality[]>(

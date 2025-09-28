@@ -177,20 +177,21 @@ export function BiometricCapture({
     <div className="grid gap-2">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="rounded-xl border border-slate-700 p-2 bg-slate-900 flex justify-center">
-          <video
-            ref={videoRef}
-            className="rounded-md"
-            playsInline
-            muted
-          />
+          <video ref={videoRef} className="rounded-md" playsInline muted />
         </div>
         {result && (
           <div className="rounded-xl border border-slate-700 p-2 bg-slate-900 flex justify-center">
-            <Image
-              src={result}
-              alt="biometría"
-              className="mt-2  rounded-md border border-slate-700"
-            />
+            <div className="relative w-full h-auto min-h-[200px] max-h-[500px] aspect-square md:aspect-video">
+              <Image
+                src={result}
+                alt="biometría"
+                fill
+                className="rounded-md object-scale-down" // Mantiene proporción sin recortar
+                unoptimized
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 70vw"
+                priority // Para imágenes importantes que cargan primero
+              />
+            </div>
           </div>
         )}
 
