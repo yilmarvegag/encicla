@@ -14,8 +14,8 @@ import {
   UserCircleIcon,
 } from "@heroicons/react/16/solid";
 import { checkDocumentExists, sendOtp } from "@/lib/form.service";
+import { StepsHeader } from "@/components/ui/StepsHeader";
 
-// Submit final simulado
 async function submitAll(values: any) {
   console.log("[SUBMIT FINAL]", values);
   await new Promise((r) => setTimeout(r, 400));
@@ -24,11 +24,12 @@ async function submitAll(values: any) {
 
 export default function Page() {
   const stepper = useStepper();
+  const otpSent = React.useRef(false);
 
   const form = useForm({
     mode: "onTouched",
     resolver: zodResolver(stepper.current.schema),
-    shouldUnregister: false, // mantener datos de todos los steps
+    shouldUnregister: false,
     defaultValues: {
       contractAccepted: false,
       documentType: "Cédula de Ciudadanía",
@@ -41,84 +42,58 @@ export default function Page() {
   const currentIndex = utils.getIndex(stepper.current.id);
 
   const onSubmit = async (values: any) => {
-    console.log("[FORM] Valid submit:", stepper.current.id);
-
     if (stepper.isLast) {
-      // En el último paso, ya pasa por el schema de step3; enviamos TODO
       const ok = await submitAll(values);
-      // if (ok) stepper.next(); // -> success
       if (ok) {
         alert("¡Formulario enviado! (ver consola)");
         form.reset();
-        stepper.reset(); // volver al inicio
+        stepper.reset();
       }
     } else if (stepper.isFirst) {
-      //validar si existe
-      // 1) Validar existencia del documento en DB
       const { data, status } = await checkDocumentExists(values.documentNumber);
-      // console.log("Check document exists", { data, status });
-      if (status == 200 && data) {
+      if (status === 200 && data) {
         form.setError("documentNumber", {
           type: "manual",
           message: "El número de documento ya está registrado",
         });
-        return; // detener avance
+        return;
       }
-      //enviar otp
-      // const otp = await sendOtp(values.email);
       setTimeout(async () => {
+        if (otpSent.current) return;
         const otp = await sendOtp(values.email);
         console.log("OTP enviado", otp);
-      }, 2000); // simular que llegó el OTP
-      // console.log("OTP enviado", otp);
-      // if (otp.data) {
+        otpSent.current = true;
+      }, 2000);
       stepper.next();
-      //   console.log("[FORM] Submit step:", stepper.current.id, values);
-      // }
     } else {
       stepper.next();
     }
   };
 
+  // Configuración de los steps con iconos
+  const stepsConfig = [
+    { id: "step1", label: "Información Básica", icon: CogIcon },
+    { id: "step2", label: "Identificación", icon: IdentificationIcon },
+    { id: "step3", label: "Información Personal", icon: UserCircleIcon },
+  ];
+
   return (
-    <main className="mx-auto max-w-10/12 p-6">
-      <h1 className="text-2xl font-semibold mb-6">Proceso de Inscripción</h1>
+    <main className="container-safe pt-4 md:pt-6">
+      {/* Título compacto en móvil */}
+      <h1 className="text-xl md:text-2xl font-semibold mb-3 md:mb-6">
+        Proceso de Inscripción
+      </h1>
 
       <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {/* Header con pasos */}
-          <nav aria-label="Pasos" className="group">
-            <ol className="flex items-center gap-2">
-              {stepper.all.map((step, index, array) => (
-                <React.Fragment key={step.id}>
-                  <li className="flex items-center gap-3">
-                    {index < 1 ? (
-                      <CogIcon
-                        className={`h-10 w-10 rounded-full p-1 ${index < currentIndex ? "bg-green-600" : ""}`}
-                      />
-                    ) : index < 2 ? (
-                      <IdentificationIcon
-                        className={`h-10 w-10 rounded-full p-1 ${index < currentIndex ? "bg-green-600" : ""}`}
-                      />
-                    ) : (
-                      <UserCircleIcon
-                        className={`h-10 w-10 rounded-full p-1 ${index < currentIndex ? "bg-green-600" : ""}`}
-                      />
-                    )}
-                    <span className="text-sm font-bold">{step.label}</span>
-                  </li>
-                  {index < array.length - 1 && (
-                    <div
-                      className={`h-px flex-1 ${index < currentIndex ? "bg-green-600" : "bg-slate-700"}`}
-                    />
-                  )}
-                </React.Fragment>
-              ))}
-            </ol>
-          </nav>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-4 md:space-y-6 border border-gray-500 p-5 rounded-3xl shadow-sm"
+        >
+          {/* Header con pasos responsive */}
+          <StepsHeader steps={stepsConfig} currentIndex={currentIndex} />
 
-          {/* Contenido por step */}
-          <section className="rounded-2xl border border-slate-800 p-4">
+          {/* Contenido del paso con padding responsivo */}
+          <section className="rounded-2xl  p-4 sm:p-6 md:p-8 shadow-sm">
             {stepper.switch({
               step1: () => <Step1 />,
               step2: () => <Step2 />,
@@ -126,31 +101,68 @@ export default function Page() {
             })}
           </section>
 
-          {/* Footer */}
-          {!stepper.isLast ? (
-            // <div className="flex justify-end gap-4">
-            <div
-              className={`flex gap-4 ${stepper.isFirst ? "justify-end" : "justify-between"}`}
-            >
-              {stepper.isFirst ? null : (
+          {/* Acciones: barra fija en móvil, inline en desktop */}
+          <>
+            {/* Desktop / md+: acciones en flujo */}
+            <div className="hidden md:flex gap-4 justify-between">
+              {stepper.isFirst ? (
+                <span />
+              ) : (
                 <button
                   type="button"
-                  className="btn"
+                  className="btn btn-secondary sm:w-full lg:w-1/4"
                   onClick={stepper.prev}
                   disabled={stepper.isFirst}
                 >
                   Atrás
                 </button>
               )}
-              <button type="submit" className="btn w-lg cursor-pointer">
-                {stepper.isLast ? "Finalizar" : "Siguiente"}
+              <button type="submit" className="btn btn-primary w-3/4">
+                {stepper.isLast ? "Guardar información" : "Siguiente"}
               </button>
             </div>
+
+            {/* Mobile: barra fija inferior */}
+            <div className="md:hidden sticky bottom-0 left-0 right-0  py-3 px-4 shadow-lg">
+              <div className="flex items-center justify-between gap-3">
+                {stepper.isFirst ? (
+                  <span />
+                ) : (
+                  <button
+                    type="button"
+                    className="btn btn-secondary w-1/4"
+                    onClick={stepper.prev}
+                    disabled={stepper.isFirst}
+                  >
+                    Atrás
+                  </button>
+                )}
+                <button type="submit" className="btn btn-primary w-3/4">
+                  {stepper.isLast ? "Guardar información" : "Siguiente"}
+                </button>
+              </div>
+            </div>
+          </>
+          {/* {!stepper.isLast ? (
+            
           ) : (
-            <button type="submit" className="btn w-full">
-              Guardar información
-            </button>
-          )}
+            // Último paso: un solo CTA
+            <>
+              <div className="hidden md:block">
+                <button
+                  type="submit"
+                  className="btn btn-primary w-full md:w-auto"
+                >
+                  Guardar información
+                </button>
+              </div>
+              <div className="md:hidden sticky bottom-0 left-0 right-0  py-3 px-4 shadow-lg">
+                <button type="submit" className="btn btn-primary w-full">
+                  Guardar información
+                </button>
+              </div>
+            </>
+          )} */}
         </form>
       </FormProvider>
     </main>

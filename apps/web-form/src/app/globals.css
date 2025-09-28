@@ -1,12 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: dark;
+  color-scheme: white;
 }
 
-body {
+/* ------- Accesibilidad móvil ------- */
+/* Evita zoom forzado en iOS cuando focusea inputs: font-size >= 16px */
+input, select, textarea { font-size: 16px; }
+
+/* Botones e inputs con área táctil mínima (44px) */
+.btn, .input { min-height: 44px; }
+
+/* body {
   @apply bg-slate-900 text-slate-100;
-}
+} */
 
 .input {
   @apply w-full rounded-xl bg-slate-800 border border-slate-700 px-4 py-2 outline-none focus:ring-2 focus:ring-sky-500 transition-colors duration-200;
@@ -25,4 +32,56 @@ body {
          h-10 w-10 bg-sky-600 hover:bg-sky-500 active:bg-sky-700
          disabled:opacity-50 disabled:cursor-not-allowed
          focus:outline-none focus:ring-2 focus:ring-sky-500;
+}
+
+/* ------- Helpers responsive ------- */
+.container-safe {
+  /* max ancho cómodo en móvil y tablet */
+  @apply mx-auto w-full max-w-screen-sm md:max-w-3xl lg:max-w-4xl;
+  /* padding lateral que respeta notch en iOS */
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+/* paddings inferior que respetan barra gestual */
+.pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+/* barra fija inferior borrosa (para acciones) */
+/* .sticky-actions {
+  @apply fixed inset-x-0 bottom-0 z-40 border-t border-slate-800
+         bg-slate-900/80 backdrop-blur supports-[backdrop-filter]:bg-slate-900/60;
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+} */
+
+/* Cabecera de steps desplazable horizontalmente en pantallas angostas */
+/* .steps-scroll {
+  @apply -mx-4 overflow-x-auto px-4;
+  scroll-snap-type: x mandatory;
+} */
+/* .step-chip {
+  @apply shrink-0 scroll-snap-align-start rounded-full border px-3 py-1 text-sm;
+} */
+
+/* Asegurar que los botones tengan estilos consistentes */
+.btn {
+  @apply px-4 py-2 rounded-lg font-medium transition-colors;
+}
+
+.btn-primary {
+  @apply bg-sky-600 text-white hover:bg-sky-700;
+}
+
+.btn-secondary {
+  @apply bg-gray-200 text-gray-700 hover:bg-gray-300;
+}
+
+/* Mejorar la visualización del stepper en móvil */
+@media (max-width: 768px) {
+  .container-safe {
+    @apply px-4;
+  }
 }

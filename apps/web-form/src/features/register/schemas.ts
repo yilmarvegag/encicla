@@ -128,20 +128,29 @@ export const step2Schema = z
         break;
     }
   });
+
 export type Step2Values = z.infer<typeof step2Schema>;
+
+export const numeric = {
+  // Validador básico para números
+  required: (message?: string) => 
+    z.coerce.number({
+      error: message || "Solo números permitidos",
+    }),
+  }
 
 /* STEP 3 — dirección estructurada */
 export const step3Schema = z.object({
   viaTipo: z.enum(["Calle", "Carrera", "Transversal", "Diagonal", "Avenida"]),
-  viaNumero: z.string().regex(/^\d+$/, "Solo números"),
+  viaNumero: numeric.required("Solo números"),
   viaLetra: z.enum(LETRA_OPTIONS).default("No aplica"),
   viaComp: z.enum(COMP1_OPTIONS).default("No aplica"),
-  numero: z.string().regex(/^\d+$/, "Solo números"),
+  numero: numeric.required("Solo números"),
   letra: z.enum(LETRA_OPTIONS).default("No aplica"),
   viaComp2: z.enum(COMP1_OPTIONS).default("No aplica"),
-  compNum: z.string().regex(/^\d+$/, "Solo números"),
+  compNum: numeric.required("Solo números"),
   comp2: z.enum(LETRA_OPTIONS).default("No aplica"),
-  apto: z.string().min(1, "Indica apto/casa o N/A"),
+  apto: z.string().min(1, "Indica apto/casa/interior o N/A"),
 
   // Derivado:
   address: z.string().min(8, "Dirección incompleta"),
@@ -158,7 +167,7 @@ export const step3Schema = z.object({
     "Desempleado",
   ]),
   emergencyName: z.string().min(3, "Nombre requerido"),
-  emergencyPhone: z.string().regex(/^\d{7,10}$/, "Teléfono inválido"),
-  emergencyKinship: z.string().min(3, "Parentesco requerido"),
+  emergencyPhone: z.string().regex(/^\d{7,10}$/, "Teléfono inválido").startsWith("3", "Debe iniciar con 3"),
+  emergencyKinship: z.string("Solo letras").min(3, "Parentesco requerido"),
 });
 export type Step3Values = z.infer<typeof step3Schema>;

@@ -148,8 +148,8 @@ export function Step1() {
         </div>
       </div>
 
-      <div className="flex justify-between gap-4">
-        <div className="flex items-center gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
           <label
             className={`flex items-center gap-2 p-2 rounded-md ${
               errors.habeas ? "border border-red-600 bg-red-900/20" : ""
@@ -169,12 +169,12 @@ export function Step1() {
               Política de Habeas Data
             </a>
           </label>
-          {/* {errors.habeas && (
+          {errors.habeas && (
             <p className="text-red-500 text-sm mt-1">{errors.habeas.message}</p>
-          )} */}
+          )}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div>
           <label
             className={`flex items-center gap-2 p-2 rounded-md ${
               errors.terms ? "border border-red-600 bg-red-900/20" : ""
@@ -194,9 +194,9 @@ export function Step1() {
               Términos y Condiciones
             </a>
           </label>
-          {/* {errors.terms && (
+          {errors.terms && (
             <p className="text-red-500 text-sm mt-1">{errors.terms.message}</p>
-          )} */}
+          )}
         </div>
       </div>
 

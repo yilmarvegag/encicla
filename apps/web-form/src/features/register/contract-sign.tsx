@@ -75,6 +75,8 @@ export function ContractSign({
     });
 
     onPdf(file);
+    // console.log("PDF firmado", file, blob, ab, bytes);
+    alert("PDF firmado listo para enviar");
   }
 
   function clear() {
@@ -83,7 +85,7 @@ export function ContractSign({
 
   return (
     <div className="grid gap-2">
-      <div className="rounded-xl border border-slate-700 bg-slate-900 p-2">
+      <div className="rounded-xl border border-slate-700 bg-white p-2">
         <canvas ref={canvasRef} className="w-full h-40" />
       </div>
       <div className="flex gap-2">

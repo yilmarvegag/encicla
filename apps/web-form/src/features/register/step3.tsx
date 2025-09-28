@@ -48,43 +48,64 @@ export function Step3() {
       <p className="text-sm font-bold">Complemento de la dirección</p>
 
       <div className="grid md:grid-cols-3 gap-2">
-        <select className={`w-full input ${errors.municipio ? "input-error" : ""}`} {...register("municipio")}>
-          <option value="0">
-            {loadingMuns ? "Cargando municipios..." : "Selecciona un municipio"}
-          </option>
-          {municipalities.map((m) => (
-            <option key={m.id} value={String(m.id)}>
-              {m.name}
+        <div>
+          <select
+            className={`w-full input ${errors.municipio ? "input-error" : ""}`}
+            {...register("municipio")}
+          >
+            <option value="">
+              {loadingMuns
+                ? "Cargando municipios..."
+                : "Selecciona un municipio"}
             </option>
-          ))}
-        </select>
+            {municipalities.map((m) => (
+              <option key={m.id} value={String(m.id)}>
+                {m.name}
+              </option>
+            ))}
+          </select>
+          {errors.municipio && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.municipio.message}
+            </p>
+          )}
+        </div>
 
-        <input
-          className="input"
-          placeholder="Comuna"
-          disabled
-          {...register("comuna")}
-        />
+        <div>
+          <input
+            className="input"
+            placeholder="Comuna"
+            disabled
+            {...register("comuna")}
+          />
+        </div>
 
-        <select
-          className={`w-full input ${errors.barrio ? "input-error" : ""}`}
-          value={barrioSel}
-          onChange={onBarrioChange}
-          disabled={!municipio || municipio === "0" || loadingNeis}
-        >
-          <option value="">
-            {loadingNeis
-              ? "Cargando barrios..."
-              : municipio && municipio !== "0"
-                ? "Selecciona un barrio"
-                : "Selecciona municipio primero"}
-          </option>
-          {neighborhoods.map((b) => (
-            <option key={b.id} value={b.name}>
-              {b.name}
+        <div>
+          <select
+            className={`w-full input ${errors.barrio ? "input-error" : ""}`}
+            value={barrioSel}
+            onChange={onBarrioChange}
+            disabled={!municipio || municipio === "0" || loadingNeis}
+          >
+            <option value="">
+              {loadingNeis
+                ? "Cargando barrios..."
+                : municipio && municipio !== "0"
+                  ? "Selecciona un barrio"
+                  : "Selecciona municipio primero"}
             </option>
-          ))}
-        </select>
+            {neighborhoods.map((b) => (
+              <option key={b.id} value={b.name}>
+                {b.name}
+              </option>
+            ))}
+          </select>
+          {errors.barrio && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.barrio.message}
+            </p>
+          )}
+        </div>
       </div>
 
       <select

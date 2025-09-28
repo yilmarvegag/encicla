@@ -161,11 +161,11 @@ export function Step2() {
       </div>
 
       {/* Errores generales */}
-      <div className="text-red-400 text-sm">
+      {/* <div className="text-red-400 text-sm">
         {Object.values(errors).map(
           (e, i) => e && <div key={i}>{String(e.message)}</div>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }
