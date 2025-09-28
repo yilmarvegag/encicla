@@ -9,11 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="StaticData\Geo\municipalities.json" />
-    <Content Remove="StaticData\Geo\neighborhoods_by_municipality.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="StaticData\Geo\municipalities.json">
       <SubType>Code</SubType>
     </None>

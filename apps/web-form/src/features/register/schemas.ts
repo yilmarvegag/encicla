@@ -157,8 +157,8 @@ export const step3Schema = z.object({
     "Estudiante",
     "Desempleado",
   ]),
-  emergencyName: z.string().min(3, "Nombre inválido"),
+  emergencyName: z.string().min(3, "Nombre requerido"),
   emergencyPhone: z.string().regex(/^\d{7,10}$/, "Teléfono inválido"),
-  emergencyKinship: z.string().min(3, "Parentesco inválido"),
+  emergencyKinship: z.string().min(3, "Parentesco requerido"),
 });
 export type Step3Values = z.infer<typeof step3Schema>;
