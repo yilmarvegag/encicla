@@ -132,12 +132,14 @@ export const step2Schema = z
 export type Step2Values = z.infer<typeof step2Schema>;
 
 export const numeric = {
-  // Validador básico para números
-  required: (message?: string) => 
-    z.coerce.number({
-      error: message || "Solo números permitidos",
-    }),
-  }
+  required: (message?: string) =>
+    z
+      .coerce
+      .number({
+        error: message || "Solo números permitidos",
+      })
+      .min(1, "Este campo es requerido"),
+};
 
 /* STEP 3 — dirección estructurada */
 export const step3Schema = z.object({

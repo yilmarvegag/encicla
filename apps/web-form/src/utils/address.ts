@@ -61,6 +61,11 @@ export function buildAddress(parts: {
   comp2?: string;
   apto: string;
 }) {
+
+  if (!parts.viaNumero || !parts.numero || !parts.compNum) {
+    console.info("Campos numéricos requeridos están vacíos");
+  }
+
   const p: (string | undefined)[] = [];
   p.push(parts.viaTipo);
   p.push(`${parts.viaNumero}`);

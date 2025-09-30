@@ -25,6 +25,7 @@ async function submitAll(values: any) {
 export default function Page() {
   const stepper = useStepper();
   const otpSent = React.useRef(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false); // New loading state
 
   const form = useForm({
     mode: "onTouched",
@@ -42,31 +43,48 @@ export default function Page() {
   const currentIndex = utils.getIndex(stepper.current.id);
 
   const onSubmit = async (values: any) => {
-    if (stepper.isLast) {
-      const ok = await submitAll(values);
-      if (ok) {
-        alert("¡Formulario enviado! (ver consola)");
-        form.reset();
-        stepper.reset();
+    setIsSubmitting(true); // Disable button immediately
+
+    try {
+      if (stepper.isLast) {
+        const ok = await submitAll(values);
+        if (ok) {
+          alert("¡Formulario enviado! (ver consola)");
+          form.reset();
+          stepper.reset();
+        }
+      } else if (stepper.isFirst) {
+        const { data, status } = await checkDocumentExists(
+          values.documentNumber
+        );
+        if (status === 200 && data) {
+          form.setError("documentNumber", {
+            type: "manual",
+            message: "El número de documento ya está registrado",
+          });
+          return;
+        }
+        // Remove setTimeout (unreliable for async); handle directly
+        if (!otpSent.current) {
+          setTimeout(async () => {
+            const otp = await sendOtp(values.email);
+            console.log("OTP enviado", otp);
+            otpSent.current = true;
+          }, 1500);
+        }
+        stepper.next();
+      } else {
+        stepper.next();
       }
-    } else if (stepper.isFirst) {
-      const { data, status } = await checkDocumentExists(values.documentNumber);
-      if (status === 200 && data) {
-        form.setError("documentNumber", {
-          type: "manual",
-          message: "El número de documento ya está registrado",
-        });
-        return;
-      }
-      setTimeout(async () => {
-        if (otpSent.current) return;
-        const otp = await sendOtp(values.email);
-        console.log("OTP enviado", otp);
-        otpSent.current = true;
-      }, 2000);
-      stepper.next();
-    } else {
-      stepper.next();
+    } catch (error) {
+      console.error("[FORM] Error submitting:", error);
+      // Optionally set form error or show user feedback
+      form.setError("root", {
+        type: "manual",
+        message: "Error procesando la solicitud. Intenta de nuevo.",
+      });
+    } finally {
+      setIsSubmitting(false); // Re-enable button regardless of success/error
     }
   };
 
@@ -117,7 +135,11 @@ export default function Page() {
                   Atrás
                 </button>
               )}
-              <button type="submit" className="btn btn-primary w-3/4">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`btn btn-primary w-3/4 ${isSubmitting ? "opacity-70 cursor-not-allowed" : "cursor-pointer"}`}
+              >
                 {stepper.isLast ? "Guardar información" : "Siguiente"}
               </button>
             </div>
@@ -137,7 +159,11 @@ export default function Page() {
                     Atrás
                   </button>
                 )}
-                <button type="submit" className="btn btn-primary w-3/4">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="btn btn-primary w-3/4"
+                >
                   {stepper.isLast ? "Guardar información" : "Siguiente"}
                 </button>
               </div>
