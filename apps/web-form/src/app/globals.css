@@ -4,6 +4,10 @@
   color-scheme: white;
 }
 
+.bg-encicla {
+  background-color: #0074C5;
+}
+
 /* ------- Accesibilidad móvil ------- */
 /* Evita zoom forzado en iOS cuando focusea inputs: font-size >= 16px */
 input, select, textarea { font-size: 16px; }

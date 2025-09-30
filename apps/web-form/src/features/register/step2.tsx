@@ -83,7 +83,6 @@ export function Step2() {
           <div className="mt-4">
             {watch("hasCivica") && (
               <input
-                // className="input mt-2"
                 className={`mt-2 input ${errors.civicaNumber ? "input-error" : ""}`}
                 placeholder="Número de Cívica personalizada"
                 {...register("civicaNumber")}

@@ -12,18 +12,18 @@ if (!API_URL) {
 const apiClient = axios.create({
   baseURL: API_URL,
   headers: { "Content-Type": "application/json" },
-  timeout: 8000, // Aumentado a 8s (debe ser menor que el timeout del Circuit Breaker)
+  timeout: 30000, // Aumentado a 8s (debe ser menor que el timeout del Circuit Breaker)
 });
 
 
 
 // Configuración mejorada del Circuit Breaker
 const circuitBreakerOptions = {
-  timeout: 10000, // Timeout mayor que el de Axios
+  timeout: 45000, // Timeout mayor que el de Axios
   errorThresholdPercentage: 50,
-  resetTimeout: 30000,
-  rollingCountTimeout: 15000, // Ventana de evaluación de errores
-  rollingCountBuckets: 10, // Más precisión en métricas
+  resetTimeout: 60000,
+  rollingCountTimeout: 30000, // Ventana de evaluación de errores
+  rollingCountBuckets: 15, // Más precisión en métricas
 };
 
 const requestBreaker = new CircuitBreaker(
@@ -37,6 +37,9 @@ const requestBreaker = new CircuitBreaker(
 // requestBreaker.on("open", () => console.warn("Circuit Breaker abierto - Servicio no disponible"));
 // requestBreaker.on("halfOpen", () => console.info("Circuit Breaker medio abierto - Probando recuperación"));
 // requestBreaker.on("close", () => console.info("Circuit Breaker cerrado - Servicio recuperado"));
+
+requestBreaker.on("failure", (err) => console.error("CB Failure:", err.message));
+requestBreaker.on("timeout", () => console.warn("CB Timeout exceeded"));
 
 requestBreaker.fallback(() =>
   Promise.reject(Object.assign(
