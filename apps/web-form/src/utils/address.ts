@@ -63,14 +63,14 @@ export function buildAddress(parts: {
 }) {
   const p: (string | undefined)[] = [];
   p.push(parts.viaTipo);
-  p.push(parts.viaNumero.toString());
+  p.push(`${parts.viaNumero}`);
   if (parts.viaLetra && parts.viaLetra !== "No aplica") p.push(parts.viaLetra);
   if (parts.viaComp && parts.viaComp !== "No aplica") p.push(parts.viaComp);
 
   if (parts.numero) p.push("#" + parts.numero);
   if (parts.letra && parts.letra !== "No aplica") p.push(parts.letra);
   if (parts.viaComp2 && parts.viaComp2 !== "No aplica") p.push(parts.viaComp2);
-  if (parts.compNum) p.push("-", parts.compNum.toString());
+  if (parts.compNum) p.push("-", `${parts.compNum}`);
 
   if (parts.comp2 && parts.comp2 !== "No aplica") p.push(parts.comp2);
   // if (parts.num2) p.push(parts.num2);
