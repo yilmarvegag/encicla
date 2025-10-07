@@ -4,6 +4,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://encicla-api-qa.
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
 import CircuitBreaker from "opossum";
 import retry from "async-retry";
+import { error } from "console";
 
 if (!API_URL) {
   console.info("NEXT_PUBLIC_API_BASE_URL is not defined");  // Fallará en build si no está seteada
@@ -24,6 +25,16 @@ const circuitBreakerOptions = {
   resetTimeout: 60000,
   rollingCountTimeout: 30000, // Ventana de evaluación de errores
   rollingCountBuckets: 15, // Más precisión en métricas
+  errorFilter: (error: Error) => {
+    // No contar ciertos errores como fallos
+    if (axios.isAxiosError(error)) {
+      // No abrir el circuito por errores 4xx (excepto 429)
+      if (error.response && error.response.status >= 400 && error.response.status < 500 && error.response.status !== 429) {
+        return true; // Filtrar estos errores
+      }
+    }
+    return false; // Contar otros errores
+  }
 };
 
 const requestBreaker = new CircuitBreaker(
@@ -165,9 +176,18 @@ export const apiService = {
   post: <T>(endpoint: string, data: unknown) =>
     handleRequest<T>({ method: "post", url: endpoint, data }),
 
+  postForm: <T>(endpoint: string, form: FormData) =>
+    handleRequest<T>({
+      method: "post",
+      url: endpoint,
+      data: form,
+      // headers: { "Content-Type": "multipart/form-data" }, // axios detecta boundaries
+      timeout: 60000,
+    }),
+
   put: <T>(endpoint: string, data: unknown) =>
     handleRequest<T>({ method: "put", url: endpoint, data }),
 
   delete: <T>(endpoint: string) =>
     handleRequest<T>({ method: "delete", url: endpoint }),
-};  
+};

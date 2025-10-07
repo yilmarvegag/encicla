@@ -101,9 +101,7 @@ export function Step3() {
             ))}
           </select>
           {errors.barrio && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.barrio.message}
-            </p>
+            <p className="text-red-500 text-sm mt-1">{errors.barrio.message}</p>
           )}
         </div>
       </div>
@@ -156,6 +154,19 @@ export function Step3() {
             </p>
           )}
         </div>
+      </div>
+
+      <p className="text-sm font-bold">Ingresa el código envido al correo electrónico ingresado</p>
+
+      <div>
+        <input
+          className={`w-full input ${errors.otpCode ? "input-error" : ""}`}
+          placeholder="Código OTP (6 dígitos)"
+          {...register("otpCode")}
+        />
+        {errors.otpCode && (
+          <p className="text-red-500 text-sm mt-1">{errors.otpCode.message}</p>
+        )}
       </div>
 
       {(munErr || neiErr) && (

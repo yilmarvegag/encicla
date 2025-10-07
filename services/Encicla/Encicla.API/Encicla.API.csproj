@@ -34,4 +34,8 @@
     <ProjectReference Include="..\Encicla.Persistence\Encicla.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\Uploads\" />
+  </ItemGroup>
+
 </Project>

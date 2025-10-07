@@ -1,15 +1,26 @@
+import {
+  CogIcon,
+  IdentificationIcon,
+  UserCircleIcon,
+} from "@heroicons/react/16/solid";
+
+  // Configuración de los steps con iconos
+  const stepsConfig : { id: string; label: string; icon: React.ComponentType<any> }[] = [
+    { id: "step1", label: "Información Básica", icon: CogIcon },
+    { id: "step2", label: "Identificación", icon: IdentificationIcon },
+    { id: "step3", label: "Información Personal", icon: UserCircleIcon },
+  ];
+
 
 export function StepsHeader({
-  steps,
   currentIndex,
 }: {
-  steps: { id: string; label: string; icon: React.ComponentType<any> }[];
   currentIndex: number;
 }) {
   return (
     <nav aria-label="Pasos" className="w-full">
       <ol className="flex items-center w-full gap-0 md:gap-8">
-        {steps.map((s, index) => {
+        {stepsConfig.map((s, index) => {
           const active = index === currentIndex;
           const done = index < currentIndex;
           const Icon = s.icon;
@@ -83,7 +94,7 @@ export function StepsHeader({
               </div>
 
               {/* Conector a la DERECHA (móvil y desktop) */}
-              {index < steps.length - 1 && (
+              {index < stepsConfig.length - 1 && (
                 <>
                   {/* Móvil: línea centrada verticalmente al ícono */}
                   <div

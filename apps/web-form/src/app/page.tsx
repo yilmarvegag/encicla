@@ -8,25 +8,14 @@ import { useStepper, utils } from "@/features/register/stepper";
 import { Step1 } from "@/features/register/step1";
 import { Step2 } from "@/features/register/step2";
 import { Step3 } from "@/features/register/step3";
-import {
-  CogIcon,
-  IdentificationIcon,
-  UserCircleIcon,
-} from "@heroicons/react/16/solid";
-import { checkDocumentExists, sendOtp } from "@/lib/form.service";
+
+import { checkDocumentExists, sendOtp, submitRegistration, verifyOtp } from "@/lib/form.service";
 import { StepsHeader } from "@/components/ui/StepsHeader";
 
-async function submitAll(values: any) {
-  console.log("[SUBMIT FINAL]", values);
-  await new Promise((r) => setTimeout(r, 400));
-  return true;
-}
 
 export default function Page() {
   const stepper = useStepper();
-  const otpSent = React.useRef(false);
-  const [isSubmitting, setIsSubmitting] = React.useState(false); // New loading state
-
+  const currentIndex = utils.getIndex(stepper.current.id);
   const form = useForm({
     mode: "onTouched",
     resolver: zodResolver(stepper.current.schema),
@@ -40,60 +29,65 @@ export default function Page() {
     } as any,
   });
 
-  const currentIndex = utils.getIndex(stepper.current.id);
+  const otpSent = React.useRef(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const onSubmit = async (values: any) => {
-    setIsSubmitting(true); // Disable button immediately
-
+    setIsSubmitting(true);
+    // console.info("[FORM VALUES]", values);
     try {
       if (stepper.isLast) {
-        const ok = await submitAll(values);
-        if (ok) {
-          alert("¡Formulario enviado! (ver consola)");
-          form.reset();
-          stepper.reset();
-        }
-      } else if (stepper.isFirst) {
-        const { data, status } = await checkDocumentExists(
-          values.documentNumber
-        );
-        if (status === 200 && data) {
-          form.setError("documentNumber", {
-            type: "manual",
-            message: "El número de documento ya está registrado",
-          });
+        const allFields = form.getValues(); 
+        console.log("[ALL VALUES]", allFields);
+        // 1) verificar OTP con email del step1 y otpCode del step3
+        const ok = await verifyOtp({ email: allFields.email, code: allFields.otpCode });
+        if (!(ok?.data === true)) {
+          form.setError("otpCode", { type: "manual", message: "OTP incorrecto" });
           return;
         }
-        // Remove setTimeout (unreliable for async); handle directly
-        if (!otpSent.current) {
-          setTimeout(async () => {
-            const otp = await sendOtp(values.email);
-            console.log("OTP enviado", otp);
-            otpSent.current = true;
-          }, 1500);
-        }
-        stepper.next();
-      } else {
-        stepper.next();
+
+        // 2) enviar TODO en multipart
+        // si guardaste id de registro en metadata:
+        const regId = stepper.getMetadata("step1")?.id;
+        const allValues = { ...allFields, registrationId: regId };
+        const resp = await submitRegistration(allValues);
+        console.log("[RESP SUBMIT]", resp);
+        alert("¡Formulario enviado!");
+        form.reset();
+        stepper.reset();
+        return;
       }
-    } catch (error) {
-      console.error("[FORM] Error submitting:", error);
-      // Optionally set form error or show user feedback
-      form.setError("root", {
-        type: "manual",
-        message: "Error procesando la solicitud. Intenta de nuevo.",
-      });
+
+
+      // Paso 1: check doc y enviar OTP si no se ha enviado
+      // if (stepper.isFirst) {
+      //   const { data, status } = await checkDocumentExists(values.documentNumber);
+      //   if (status === 200 && data) {
+      //     form.setError("documentNumber", {
+      //       type: "manual",
+      //       message: "El número de documento ya está registrado",
+      //     });
+      //     return;
+      //   }
+      //   if (!otpSent.current) {
+      //     await sendOtp(values.email);
+      //     otpSent.current = true;
+      //   }
+      //   stepper.next();
+      //   return;
+      // }
+
+      // Paso 2 → paso 3
+      stepper.next();
+    } catch (err) {
+      console.error(err);
+      form.setError("root", { type: "manual", message: "Error procesando la solicitud. Intenta de nuevo." });
     } finally {
-      setIsSubmitting(false); // Re-enable button regardless of success/error
+      setIsSubmitting(false);
     }
   };
 
-  // Configuración de los steps con iconos
-  const stepsConfig = [
-    { id: "step1", label: "Información Básica", icon: CogIcon },
-    { id: "step2", label: "Identificación", icon: IdentificationIcon },
-    { id: "step3", label: "Información Personal", icon: UserCircleIcon },
-  ];
+
 
   return (
     <main className="container-safe pt-4 md:pt-6">
@@ -108,7 +102,7 @@ export default function Page() {
           className="space-y-4 md:space-y-6 border border-gray-500 p-5 rounded-3xl shadow-sm"
         >
           {/* Header con pasos responsive */}
-          <StepsHeader steps={stepsConfig} currentIndex={currentIndex} />
+          <StepsHeader currentIndex={currentIndex} />
 
           {/* Contenido del paso con padding responsivo */}
           <section className="rounded-2xl  p-4 sm:p-6 md:p-8 shadow-sm">
@@ -169,26 +163,6 @@ export default function Page() {
               </div>
             </div>
           </>
-          {/* {!stepper.isLast ? (
-            
-          ) : (
-            // Último paso: un solo CTA
-            <>
-              <div className="hidden md:block">
-                <button
-                  type="submit"
-                  className="btn btn-primary w-full md:w-auto"
-                >
-                  Guardar información
-                </button>
-              </div>
-              <div className="md:hidden sticky bottom-0 left-0 right-0  py-3 px-4 shadow-lg">
-                <button type="submit" className="btn btn-primary w-full">
-                  Guardar información
-                </button>
-              </div>
-            </>
-          )} */}
         </form>
       </FormProvider>
     </main>

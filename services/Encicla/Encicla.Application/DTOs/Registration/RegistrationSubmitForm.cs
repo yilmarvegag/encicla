@@ -1,10 +1,9 @@
-﻿namespace Encicla.Domain.Entities
-{
-    //public enum RegistrationStatus { Draft, Submitted, Rejected }
-    public class Registration
-    {
-        public Guid Id { get; set; }
+﻿using Microsoft.AspNetCore.Http;
 
+namespace Encicla.Application.DTOs.Registration
+{
+    public class RegistrationSubmitForm
+    {
         // Step1
         public string FirstName { get; set; } = default!;
         public string? SecondName { get; set; }
@@ -22,17 +21,16 @@
         public bool HasCivicaPersonalizada { get; set; }
         public string? CivicaNumber { get; set; }
         public bool ContractAccepted { get; set; }
+        public IFormFile? SignatureImage { get; set; }
+        public IFormFile? SignedContractPdf { get; set; }
+        public IFormFile? BiometricImage { get; set; }
 
-        public string? SignatureImageUrl { get; set; }
-        public string? SignedContractUrl { get; set; }
-        public string? BiometricImageUrl { get; set; }
-
-        public string? IdDocUrl { get; set; }
-        public string? IdFrontUrl { get; set; }
-        public string? IdBackUrl { get; set; }
-        public string? PassportUrl { get; set; }
-        public string? GuardianIdUrl { get; set; }
-        public string? AuthorizationLetterUrl { get; set; }
+        public IFormFile? IdDoc { get; set; }
+        public IFormFile? IdFront { get; set; }
+        public IFormFile? IdBack { get; set; }
+        public IFormFile? PassportFile { get; set; }
+        public IFormFile? GuardianId { get; set; }
+        public IFormFile? AuthorizationLetter { get; set; }
 
         // Step3
         public string Address { get; set; } = default!;
@@ -44,9 +42,10 @@
         public string EmergencyPhone { get; set; } = default!;
         public string EmergencyKinship { get; set; } = default!;
 
-        public string Status { get; set; } = "Pendiente";
-        public DateTimeOffset CreatedAt { get; set; }
+        // Correlación
+        public string? RegistrationId { get; set; }
+
+        // OTP recibido en el último paso
+        public string OtpCode { get; set; } = default!;
     }
-
-
 }

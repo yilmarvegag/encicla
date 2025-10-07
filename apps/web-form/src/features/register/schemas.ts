@@ -35,7 +35,7 @@ export const step1Schema = z
     if (val.email !== val.emailConfirm) {
       ctx.addIssue({
         code: "custom",
-        path: ["confirmEmail"], // 👈 el error cae en el campo de confirmación
+        path: ["emailConfirm"], // 👈 el error cae en el campo de confirmación
         message: "Los correos no coinciden",
       });
     }
@@ -171,5 +171,6 @@ export const step3Schema = z.object({
   emergencyName: z.string().min(3, "Nombre requerido"),
   emergencyPhone: z.string().regex(/^\d{7,10}$/, "Teléfono inválido").startsWith("3", "Debe iniciar con 3"),
   emergencyKinship: z.string("Solo letras").min(3, "Parentesco requerido"),
+  otpCode: z.string().regex(/^\d{6}$/, "OTP inválido (6 dígitos)"),
 });
 export type Step3Values = z.infer<typeof step3Schema>;
