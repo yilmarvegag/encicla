@@ -36,9 +36,9 @@ export function Step3() {
   const onBarrioChange: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
     const value = e.target.value;
     setValue("barrio", value, { shouldValidate: true });
-    const found = neighborhoods.find((n) => n.name === value);
-    if (found?.commune)
-      setValue("comuna", found.commune, { shouldValidate: true });
+    const found = neighborhoods.find((n) => n.nombre === value);
+    if (found?.tipoDivision)
+      setValue("comuna", found.tipoDivision, { shouldValidate: true });
   };
 
   return (
@@ -60,7 +60,7 @@ export function Step3() {
             </option>
             {municipalities.map((m) => (
               <option key={m.id} value={String(m.id)}>
-                {m.name}
+                {m.nombre}
               </option>
             ))}
           </select>
@@ -95,8 +95,8 @@ export function Step3() {
                   : "Selecciona municipio primero"}
             </option>
             {neighborhoods.map((b) => (
-              <option key={b.id} value={b.name}>
-                {b.name}
+              <option key={b.id} value={b.nombre}>
+                {b.nombre}
               </option>
             ))}
           </select>
@@ -156,7 +156,7 @@ export function Step3() {
         </div>
       </div>
 
-      <p className="text-sm font-bold">Ingresa el código envido al correo electrónico ingresado</p>
+      {/* <p className="text-sm font-bold">Ingresa el código envido al correo electrónico ingresado</p>
 
       <div>
         <input
@@ -173,7 +173,7 @@ export function Step3() {
         <div className="text-yellow-400 text-sm">
           No se pudo cargar el catálogo. Intenta de nuevo.
         </div>
-      )}
+      )} */}
       {/* <div className="text-red-400 text-sm">
         {Object.values(errors).map(
           (e, i) => e && <div key={i}>{String(e.message)}</div>

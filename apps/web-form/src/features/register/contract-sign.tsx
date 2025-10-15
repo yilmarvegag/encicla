@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 import SignaturePad from "signature_pad";
 import { PDFDocument } from "pdf-lib";
+import { notify } from "@/lib/toast";
 
 type Props = {
   onChange: (dataUrl: string) => void; // PNG de la firma
@@ -76,7 +77,7 @@ export function ContractSign({
 
     onPdf(file);
     // console.log("PDF firmado", file, blob, ab, bytes);
-    alert("PDF firmado listo para enviar");
+    notify.success("¡Firma guardada!");
   }
 
   function clear() {

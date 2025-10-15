@@ -1,5 +1,8 @@
 // apps/web-form/src/lib/http.ts
-const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://encicla-api-qa.onrender.com/api";
+const API_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ??
+  "https://encicla-api-qa.onrender.com/api";
+// const authToken = process.env.NEXT_PUBLIC_WS_AUTH_TOKEN ?? "";
 
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
 import CircuitBreaker from "opossum";
@@ -7,7 +10,7 @@ import retry from "async-retry";
 import { error } from "console";
 
 if (!API_URL) {
-  console.info("NEXT_PUBLIC_API_BASE_URL is not defined");  // Fallará en build si no está seteada
+  console.info("NEXT_PUBLIC_API_BASE_URL is not defined"); // Fallará en build si no está seteada
 }
 
 const apiClient = axios.create({
@@ -15,8 +18,6 @@ const apiClient = axios.create({
   headers: { "Content-Type": "application/json" },
   timeout: 30000, // Aumentado a 8s (debe ser menor que el timeout del Circuit Breaker)
 });
-
-
 
 // Configuración mejorada del Circuit Breaker
 const circuitBreakerOptions = {
@@ -29,12 +30,17 @@ const circuitBreakerOptions = {
     // No contar ciertos errores como fallos
     if (axios.isAxiosError(error)) {
       // No abrir el circuito por errores 4xx (excepto 429)
-      if (error.response && error.response.status >= 400 && error.response.status < 500 && error.response.status !== 429) {
+      if (
+        error.response &&
+        error.response.status >= 400 &&
+        error.response.status < 500 &&
+        error.response.status !== 429
+      ) {
         return true; // Filtrar estos errores
       }
     }
     return false; // Contar otros errores
-  }
+  },
 };
 
 const requestBreaker = new CircuitBreaker(
@@ -49,14 +55,20 @@ const requestBreaker = new CircuitBreaker(
 // requestBreaker.on("halfOpen", () => console.info("Circuit Breaker medio abierto - Probando recuperación"));
 // requestBreaker.on("close", () => console.info("Circuit Breaker cerrado - Servicio recuperado"));
 
-requestBreaker.on("failure", (err) => console.error("CB Failure:", err.message));
+requestBreaker.on("failure", (err) =>
+  console.error("CB Failure:", err.message)
+);
 requestBreaker.on("timeout", () => console.warn("CB Timeout exceeded"));
 
 requestBreaker.fallback(() =>
-  Promise.reject(Object.assign(
-    new Error("Servicio no disponible temporalmente. Por favor intente más tarde."),
-    { isCircuitBreakerError: true }
-  ))
+  Promise.reject(
+    Object.assign(
+      new Error(
+        "Servicio no disponible temporalmente. Por favor intente más tarde."
+      ),
+      { isCircuitBreakerError: true }
+    )
+  )
 );
 
 // si se necesita el interceptor de request, para autenticación, descomentar
@@ -91,9 +103,10 @@ requestBreaker.fallback(() =>
 //   }
 // );
 
-
-function isCircuitBreakerError(error: unknown): error is Error & { isCircuitBreakerError: boolean } {
-  return error instanceof Error && 'isCircuitBreakerError' in error;
+function isCircuitBreakerError(
+  error: unknown
+): error is Error & { isCircuitBreakerError: boolean } {
+  return error instanceof Error && "isCircuitBreakerError" in error;
 }
 
 const handleRequest = async <T>(config: AxiosRequestConfig): Promise<T> => {
@@ -108,7 +121,11 @@ const handleRequest = async <T>(config: AxiosRequestConfig): Promise<T> => {
           if (axios.isAxiosError(error)) {
             // No reintentar para timeouts explícitos
             if (error.code === "ECONNABORTED") {
-              bail(new Error(`Timeout: La petición excedió los ${apiClient.defaults.timeout}ms`));
+              bail(
+                new Error(
+                  `Timeout: La petición excedió los ${apiClient.defaults.timeout}ms`
+                )
+              );
               return;
             }
 
@@ -117,12 +134,22 @@ const handleRequest = async <T>(config: AxiosRequestConfig): Promise<T> => {
               if (error.response.status === 429) {
                 // Manejo especial para rate limiting
                 const retryAfter = error.response.headers["retry-after"] || 5;
-                await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+                await new Promise((resolve) =>
+                  setTimeout(resolve, retryAfter * 1000)
+                );
                 throw error; // Reintentar después de esperar
               }
 
-              if (error.response.status >= 400 && error.response.status <= 500) {
-                bail(error);
+              if (
+                error.response.status >= 400 &&
+                error.response.status <= 500
+              ) {
+                console.error("Server 4xx payload:", {
+                  url: config.url,
+                  status: error.response.status,
+                  data: error.response.data,
+                });
+                bail(error|| error);
                 return;
               }
             }
@@ -135,7 +162,11 @@ const handleRequest = async <T>(config: AxiosRequestConfig): Promise<T> => {
           }
 
           // No reintentar para errores de red sin respuesta
-          if (!axios.isAxiosError(error) && error instanceof Error && error.message.includes("Network Error")) {
+          if (
+            !axios.isAxiosError(error) &&
+            error instanceof Error &&
+            error.message.includes("Network Error")
+          ) {
             bail(new Error("Error de conexión de red"));
             return;
           }
@@ -149,20 +180,24 @@ const handleRequest = async <T>(config: AxiosRequestConfig): Promise<T> => {
         maxTimeout: 10000, // Tiempo máximo entre reintentos
         factor: 2, // Backoff exponencial
         onRetry: (error: Error, attempt: number) => {
-          console.warn(`Reintento ${attempt} para ${config.method?.toUpperCase()} ${config.url}: ${error.message}`);
+          console.warn(
+            `Reintento ${attempt} para ${config.method?.toUpperCase()} ${config.url}: ${error.message}`
+          );
         },
       }
     );
   } catch (error: unknown) {
-    console.error(
-      `Error final ${config.method?.toUpperCase()} ${config.url}:`,
-      error instanceof Error ? error.message : "Error desconocido"
-    );
+    // console.error(
+    //   `Error final ${config.method?.toUpperCase()} ${config.url}:`,
+    //   error instanceof Error ? error.message : "Error desconocido"
+    // );
 
     // Manejo especial para errores del Circuit Breaker
     if (isCircuitBreakerError(error)) {
       // Aquí puedes agregar notificaciones al usuario
-      console.warn("El servicio está temporalmente inaccesible (Circuito abierto)");
+      console.warn(
+        "El servicio está temporalmente inaccesible (Circuito abierto)"
+      );
     }
 
     throw error;
@@ -182,6 +217,12 @@ export const apiService = {
       url: endpoint,
       data: form,
       // headers: { "Content-Type": "multipart/form-data" }, // axios detecta boundaries
+      // headers: {
+      //   "Content-Type": "application/json",
+      //   "Authorization": authToken
+      // },
+      headers: {}, 
+      transformRequest: (d) => d,
       timeout: 60000,
     }),
 

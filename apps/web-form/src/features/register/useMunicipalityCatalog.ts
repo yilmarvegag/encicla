@@ -8,7 +8,7 @@ export function useMunicipalities() {
     "municipalities",
     async () => {
       const env = await getMunicipalities();
-      return env.data.sort((a,b)=>a.name.localeCompare(b.name));
+      return env.data.sort((a,b)=>a.nombre.localeCompare(b.nombre));
     },
     { revalidateOnFocus: false }
   );
@@ -23,7 +23,7 @@ export function useNeighborhoods(municipalityId?: string | number) {
     disabled ? null : (["neighborhoods", idStr] as const),
     async ([, id]:string) => {
       const env = await getNeighborhoods(id);
-      return env.data.sort((a,b)=>a.name.localeCompare(b.name));
+      return env.data.sort((a,b)=>a.nombre.localeCompare(b.nombre));
     },
     { revalidateOnFocus: false }
   );

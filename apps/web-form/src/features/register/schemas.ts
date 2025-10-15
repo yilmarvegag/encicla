@@ -15,9 +15,10 @@ export const step1Schema = z
     firstLastName: z.string().min(3, "Mínimo 3 caracteres"),
     secondLastName: z.string().optional(),
     documentType: z.enum([
-      "Cédula de Ciudadanía",
-      "Tarjeta de Identidad",
-      "Pasaporte",
+      "CC",
+      "TI",
+      "CE",
+      "PA",
     ]),
     documentNumber: z.string().min(8, "Mínimo 8 caracteres"),
     email: emailField,
@@ -45,12 +46,12 @@ export type Step1Values = z.infer<typeof step1Schema>;
 /* STEP 2 */
 export const step2Schema = z
   .object({
-    // viene del Step1; si no lo tienes aquí aún, setéalo con setValue desde metadata
-    documentType: z.enum([
-      "Cédula de Ciudadanía",
-      "Tarjeta de Identidad",
-      "Pasaporte",
-    ]),
+    // documentType: z.enum([
+    //   "CC",
+    //   "TI",
+    //   "CE",
+    //   "PA",
+    // ]),
     userType: z.enum([
       "Residente",
       "MenorEdad",
@@ -171,6 +172,6 @@ export const step3Schema = z.object({
   emergencyName: z.string().min(3, "Nombre requerido"),
   emergencyPhone: z.string().regex(/^\d{7,10}$/, "Teléfono inválido").startsWith("3", "Debe iniciar con 3"),
   emergencyKinship: z.string("Solo letras").min(3, "Parentesco requerido"),
-  otpCode: z.string().regex(/^\d{6}$/, "OTP inválido (6 dígitos)"),
+  // otpCode: z.string().regex(/^\d{6}$/, "OTP inválido (6 dígitos)"),
 });
 export type Step3Values = z.infer<typeof step3Schema>;

@@ -10,15 +10,16 @@ import { useStepper } from "./stepper";
 
 // union y type guard para documentType
 const DOC_TYPES = [
-  "Cédula de Ciudadanía",
-  "Tarjeta de Identidad",
-  "Pasaporte",
+  "CC",
+  "TI",
+  "CE",
+  "PA",
 ] as const;
 type DocType = (typeof DOC_TYPES)[number];
 function toDocType(v: unknown): DocType {
   return (DOC_TYPES as readonly string[]).includes(v as string)
     ? (v as DocType)
-    : "Cédula de Ciudadanía";
+    : "CC";
 }
 
 export function Step2() {
@@ -67,8 +68,8 @@ export function Step2() {
           </select>
         </div>
 
-        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 items-center">
           {/* Cívica personalizada opcional */}
+        {/* <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 items-center">
           <div className="flex items-center mt-4">
             <label className="">
               <input
@@ -89,7 +90,7 @@ export function Step2() {
               />
             )}
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="grid gap-4">

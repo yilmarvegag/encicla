@@ -105,10 +105,11 @@ export function Step1() {
               Tipo de Documento *
             </label>
             <select className="w-full input" {...register("documentType")}>
-              <option value="">Selecciona...</option>
-              <option>Cédula de Ciudadanía</option>
-              <option>Tarjeta de Identidad</option>
-              <option>Pasaporte</option>
+              <option value="0">Selecciona...</option>
+              <option value="CC">Cédula de Ciudadanía</option>
+              <option value="TI">Tarjeta de Identidad</option>
+              <option value="CE">Cédula de Extranjera</option>
+              <option value="PA">Pasaporte</option>
             </select>
             {errors.documentType && (
               <p className="text-red-500 text-sm mt-1">
