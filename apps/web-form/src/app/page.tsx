@@ -12,9 +12,9 @@ import { Step3 } from "@/features/register/step3";
 // import { checkDocumentExists, sendOtp, submitRegistration, verifyOtp } from "@/lib/form.service";
 import {
   ApiResponseLegacy,
-  attachRoleToUser,
+  // attachRoleToUser,
   submitRegistration,
-  uploadRegistrationFiles,
+  // uploadRegistrationFiles,
 } from "@/lib/form.service";
 import { StepsHeader } from "@/components/ui/StepsHeader";
 import { mapFormToLegacyUser } from "@/lib/legacy.mapping";
@@ -47,7 +47,7 @@ export default function Page() {
     notify.warn("Revisa los campos marcados en obligatorios.");
   };
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async () => {
     setIsSubmitting(true);
     // console.info("[FORM VALUES]", values);
     try {
@@ -113,14 +113,14 @@ export default function Page() {
           // };
           // const attach = await attachRoleToUser(attachData);
           // 3) si todo OK, subir archivos, pendiente con backend
-          const idFront = allFields.idFront,
-            idBack = allFields.idBack,
-            passportFile = allFields.passportFile,
-            guardianId = allFields.guardianId,
-            authorizationLetter = allFields.authorizationLetter,
-            signedContract = allFields.signedContract,
-            biometricImage = allFields.biometricImage,
-            signaturePng = allFields.signaturePng;
+          // // const idFront = allFields.idFront,
+          // //   idBack = allFields.idBack,
+          // //   passportFile = allFields.passportFile,
+          // //   guardianId = allFields.guardianId,
+          // //   authorizationLetter = allFields.authorizationLetter,
+          // //   signedContract = allFields.signedContract,
+          // //   biometricImage = allFields.biometricImage,
+          // //   signaturePng = allFields.signaturePng;
 
           // const files = await uploadRegistrationFiles(resp.result?.id || 0, {
           //   idFront,

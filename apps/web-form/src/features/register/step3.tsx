@@ -20,12 +20,10 @@ export function Step3() {
   const {
     municipalities,
     isLoading: loadingMuns,
-    error: munErr,
   } = useMunicipalities();
   const {
     neighborhoods,
     isLoading: loadingNeis,
-    error: neiErr,
   } = useNeighborhoods(municipio);
 
   useEffect(() => {

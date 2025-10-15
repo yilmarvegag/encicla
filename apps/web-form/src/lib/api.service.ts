@@ -4,10 +4,9 @@ const API_URL =
   "https://encicla-api-qa.onrender.com/api";
 // const authToken = process.env.NEXT_PUBLIC_WS_AUTH_TOKEN ?? "";
 
-import axios, { AxiosRequestConfig, AxiosError } from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import CircuitBreaker from "opossum";
 import retry from "async-retry";
-import { error } from "console";
 
 if (!API_URL) {
   console.info("NEXT_PUBLIC_API_BASE_URL is not defined"); // Fallará en build si no está seteada

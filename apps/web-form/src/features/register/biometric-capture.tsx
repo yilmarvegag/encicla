@@ -79,7 +79,7 @@ export function BiometricCapture({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
 
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
@@ -105,7 +105,7 @@ export function BiometricCapture({
           setReady(true);
         }
       } catch {
-        // setError("No se pudo acceder a la cámara.");
+        setError("No se pudo acceder a la cámara.");
       }
     })();
 

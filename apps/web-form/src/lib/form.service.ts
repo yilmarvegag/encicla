@@ -1,7 +1,6 @@
 // apps/web-form/src/lib/api.ts
 import { ResponseData } from "@/types/api.type";
 import { apiService } from "./api.service";
-import { ensureFile } from "./formdata.util";
 
 export type ApiResponseLegacy<T = unknown> = {
   isSuccess: boolean;

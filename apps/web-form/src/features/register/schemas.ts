@@ -46,12 +46,12 @@ export type Step1Values = z.infer<typeof step1Schema>;
 /* STEP 2 */
 export const step2Schema = z
   .object({
-    // documentType: z.enum([
-    //   "CC",
-    //   "TI",
-    //   "CE",
-    //   "PA",
-    // ]),
+    documentType: z.enum([
+      "CC",
+      "TI",
+      "CE",
+      "PA",
+    ]),
     userType: z.enum([
       "Residente",
       "MenorEdad",

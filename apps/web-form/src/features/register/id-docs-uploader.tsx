@@ -8,7 +8,7 @@ import {
   DocumentArrowDownIcon,
   PhotoIcon,
 } from "@heroicons/react/24/outline";
-import Image from "next/image";
+// import Image from "next/image";
 
 type UploadName = "idDoc" | "passportFile" | "guardianId" | "authorizationLetter";
 
@@ -70,7 +70,7 @@ function UploadField({ name, label, accept, hint, maxSizeMB = 10 }: SpecItem) {
 
   const [dragOver, setDragOver] = useState(false);
   const inputId = useMemo(() => `up-${name}`, [name]);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (isImage(file)) {
