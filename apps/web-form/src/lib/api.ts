@@ -48,7 +48,7 @@ export function startRegistration(req: StartRegistrationReq) {
 }
 
 export type VerifyOtpReq = { email: string; code: string };
-export type VerifyOtpRes = ResponseAPI<{}>;
+export type VerifyOtpRes = ResponseAPI<null>;
 
 export function verifyOtp(req: VerifyOtpReq) {
   return post<VerifyOtpRes>(`/v1/registration/verify-otp`, {
