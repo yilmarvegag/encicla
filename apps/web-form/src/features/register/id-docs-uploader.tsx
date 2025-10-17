@@ -8,6 +8,7 @@ import {
   DocumentArrowDownIcon,
   PhotoIcon,
 } from "@heroicons/react/24/outline";
+// import Image from "next/image";
 
 type UploadName = "idDoc" | "passportFile" | "guardianId" | "authorizationLetter";
 
@@ -69,7 +70,7 @@ function UploadField({ name, label, accept, hint, maxSizeMB = 10 }: SpecItem) {
 
   const [dragOver, setDragOver] = useState(false);
   const inputId = useMemo(() => `up-${name}`, [name]);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (isImage(file)) {
@@ -101,7 +102,7 @@ function UploadField({ name, label, accept, hint, maxSizeMB = 10 }: SpecItem) {
       return;
     }
 
-    setValue(name, f as any, { shouldValidate: true });
+    setValue(name, f as object, { shouldValidate: true });
     clearErrors(name);
     void trigger(name);
   }
@@ -168,21 +169,31 @@ function UploadField({ name, label, accept, hint, maxSizeMB = 10 }: SpecItem) {
         )}
 
         {/* Preview imagen */}
-        {file && isImage(file) && previewUrl && (
-          <img
+        {/* {file && isImage(file) && previewUrl && (
+          <Image
             src={previewUrl}
+            width={100}
+            height={100}
             alt="preview"
             className="absolute right-12 top-1/2 -translate-y-1/2 h-10 w-10 rounded-md object-cover border border-slate-700"
           />
-        )}
+        )} */}
 
         {/* Indicador PDF */}
-        {file && !isImage(file) && (
+        {/* {file && !isImage(file) && (
+          <DocumentArrowDownIcon
+            className="absolute right-12 top-1/2 -translate-y-1/2 h-8 w-8 opacity-70"
+            aria-hidden
+          />
+        )} */}
+
+        {file && (
           <DocumentArrowDownIcon
             className="absolute right-12 top-1/2 -translate-y-1/2 h-8 w-8 opacity-70"
             aria-hidden
           />
         )}
+
       </label>
 
       <input

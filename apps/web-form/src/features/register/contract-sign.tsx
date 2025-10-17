@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useRef } from "react";
 import SignaturePad from "signature_pad";
-import { PDFDocument, rgb } from "pdf-lib";
+import { PDFDocument } from "pdf-lib";
+import { notify } from "@/lib/toast";
 
 type Props = {
   onChange: (dataUrl: string) => void; // PNG de la firma
@@ -75,6 +76,8 @@ export function ContractSign({
     });
 
     onPdf(file);
+    // console.log("PDF firmado", file, blob, ab, bytes);
+    notify.success("¡Firma guardada!");
   }
 
   function clear() {
@@ -83,7 +86,7 @@ export function ContractSign({
 
   return (
     <div className="grid gap-2">
-      <div className="rounded-xl border border-slate-700 bg-slate-900 p-2">
+      <div className="rounded-xl border border-slate-700 bg-white p-2">
         <canvas ref={canvasRef} className="w-full h-40" />
       </div>
       <div className="flex gap-2">

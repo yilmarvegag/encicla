@@ -66,7 +66,7 @@ builder.Services.AddCors(options =>
     {
         options.AddPolicy("QACorsPolicy", builder =>
         {
-            builder.WithOrigins("https://enicla.qa.net")  // Permite solo el frontend de QA
+            builder.WithOrigins("*.onrender.com")  // Permite solo el frontend de QA
                    .AllowAnyMethod()
                    .AllowAnyHeader();
         });
@@ -120,11 +120,24 @@ app.UseAuthorization();
 //Middleware pipeline
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
+Console.WriteLine($"Content Root Path: {app.Environment.ContentRootPath}");
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "StaticData")),
     //RequestPath = "/static"
 });
+
+var staticDataPath = Path.Combine(app.Environment.ContentRootPath, "StaticData");
+Console.WriteLine($"Static Data Path: {staticDataPath}");
+//if (!Directory.Exists(staticDataPath))
+//{
+//    Directory.CreateDirectory(staticDataPath);
+//}
+
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(staticDataPath),
+//});
 
 app.MapControllers();
 

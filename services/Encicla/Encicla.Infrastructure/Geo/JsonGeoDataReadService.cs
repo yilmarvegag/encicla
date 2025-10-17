@@ -48,6 +48,7 @@ namespace Encicla.Infrastructure.Geo
                 return [];
             }
 
+            _logger.LogInformation("Municipalities Path: {_municipalitiesPath}", _municipalitiesPath);
             await using var fs = File.OpenRead(_municipalitiesPath);
             var data = await JsonSerializer.DeserializeAsync<List<MunicipalityDto>>(fs, _json, ct);
             return (data ?? []).AsReadOnly();

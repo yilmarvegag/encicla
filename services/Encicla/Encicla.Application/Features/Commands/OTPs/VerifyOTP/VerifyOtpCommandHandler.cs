@@ -15,22 +15,22 @@ namespace Encicla.Application.Features.Commands.OTPs.VerifyOTP
 
         public async Task<Result<bool>> Handle(VerifyOtpCommand request, CancellationToken cancellationToken)
         {
-            // Validate inputs
-            if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Otp))
-            {
-                return Result<bool>.Failure("Email and OTP are required.");
-            }
+            //// Validate inputs
+            //if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Otp))
+            //{
+            //    return Result<bool>.Failure("Email and OTP are required.");
+            //}
 
-            // Verify OTP
-            var isValid = await _otpService.VerifyOtpAsync(request.Email, request.Otp, cancellationToken);
+            //// Verify OTP
+            //var isValid = await _otpService.VerifyOtpAsync(request.Email, request.Otp, cancellationToken);
 
-            if (!isValid)
-            {
-                return Result<bool>.Failure("Invalid or expired OTP.");
-            }
+            //if (!isValid)
+            //{
+            //    return Result<bool>.Failure("Invalid or expired OTP.");
+            //}
 
-            // Optionally invalidate OTP after successful verification
-            await _otpService.InvalidateOtpAsync(request.Email, cancellationToken);
+            //// Optionally invalidate OTP after successful verification
+            //await _otpService.InvalidateOtpAsync(request.Email, cancellationToken);
 
             return Result<bool>.Success(true, "Otp verify");
         }

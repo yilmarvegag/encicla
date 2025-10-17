@@ -9,11 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="StaticData\Geo\municipalities.json" />
-    <Content Remove="StaticData\Geo\neighborhoods_by_municipality.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="StaticData\Geo\municipalities.json">
       <SubType>Code</SubType>
     </None>
@@ -37,6 +32,10 @@
     <ProjectReference Include="..\Encicla.Application\Encicla.Application.csproj" />
     <ProjectReference Include="..\Encicla.Infrastructure\Encicla.Infrastructure.csproj" />
     <ProjectReference Include="..\Encicla.Persistence\Encicla.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\Uploads\" />
   </ItemGroup>
 
 </Project>

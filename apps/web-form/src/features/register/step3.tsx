@@ -7,13 +7,24 @@ import { AddressFields } from "./address-fields";
 import { useMunicipalities, useNeighborhoods } from "./useMunicipalityCatalog";
 
 export function Step3() {
-  const { register, setValue, control, formState: { errors } } = useFormContext<Step3Values>();
+  const {
+    register,
+    setValue,
+    control,
+    formState: { errors },
+  } = useFormContext<Step3Values>();
 
   const municipio = useWatch({ control, name: "municipio" }) ?? "";
   const barrioSel = useWatch({ control, name: "barrio" }) ?? "";
 
-  const { municipalities, isLoading: loadingMuns, error: munErr } = useMunicipalities();
-  const { neighborhoods, isLoading: loadingNeis, error: neiErr } = useNeighborhoods(municipio);
+  const {
+    municipalities,
+    isLoading: loadingMuns,
+  } = useMunicipalities();
+  const {
+    neighborhoods,
+    isLoading: loadingNeis,
+  } = useNeighborhoods(municipio);
 
   useEffect(() => {
     setValue("barrio", "", { shouldValidate: true });
@@ -23,8 +34,9 @@ export function Step3() {
   const onBarrioChange: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
     const value = e.target.value;
     setValue("barrio", value, { shouldValidate: true });
-    const found = neighborhoods.find((n) => n.name === value);
-    if (found?.commune) setValue("comuna", found.commune, { shouldValidate: true });
+    const found = neighborhoods.find((n) => n.nombre === value);
+    if (found?.tipoDivision)
+      setValue("comuna", found.tipoDivision, { shouldValidate: true });
   };
 
   return (
@@ -34,44 +46,68 @@ export function Step3() {
       <p className="text-sm font-bold">Complemento de la dirección</p>
 
       <div className="grid md:grid-cols-3 gap-2">
-        <select
-          className="input"
-          {...register("municipio")}
-        >
-          <option value="0">
-            {loadingMuns ? "Cargando municipios..." : "Selecciona un municipio"}
-          </option>
-          {municipalities.map((m) => (
-            <option key={m.id} value={String(m.id)}>
-              {m.name}
+        <div>
+          <select
+            className={`w-full input ${errors.municipio ? "input-error" : ""}`}
+            {...register("municipio")}
+          >
+            <option value="">
+              {loadingMuns
+                ? "Cargando municipios..."
+                : "Selecciona un municipio"}
             </option>
-          ))}
-        </select>
+            {municipalities.map((m) => (
+              <option key={m.id} value={String(m.id)}>
+                {m.nombre}
+              </option>
+            ))}
+          </select>
+          {errors.municipio && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.municipio.message}
+            </p>
+          )}
+        </div>
 
-        <input className="input" placeholder="Comuna" disabled {...register("comuna")} />
+        <div>
+          <input
+            className="input"
+            placeholder="Comuna"
+            disabled
+            {...register("comuna")}
+          />
+        </div>
 
-        <select
-          className="input"
-          value={barrioSel}
-          onChange={onBarrioChange}
-          disabled={!municipio || municipio === "0" || loadingNeis}
-        >
-          <option value="">
-            {loadingNeis
-              ? "Cargando barrios..."
-              : municipio && municipio !== "0"
-              ? "Selecciona un barrio"
-              : "Selecciona municipio primero"}
-          </option>
-          {neighborhoods.map((b) => (
-            <option key={b.id} value={b.name}>
-              {b.name}
+        <div>
+          <select
+            className={`w-full input ${errors.barrio ? "input-error" : ""}`}
+            value={barrioSel}
+            onChange={onBarrioChange}
+            disabled={!municipio || municipio === "0" || loadingNeis}
+          >
+            <option value="">
+              {loadingNeis
+                ? "Cargando barrios..."
+                : municipio && municipio !== "0"
+                  ? "Selecciona un barrio"
+                  : "Selecciona municipio primero"}
             </option>
-          ))}
-        </select>
+            {neighborhoods.map((b) => (
+              <option key={b.id} value={b.nombre}>
+                {b.nombre}
+              </option>
+            ))}
+          </select>
+          {errors.barrio && (
+            <p className="text-red-500 text-sm mt-1">{errors.barrio.message}</p>
+          )}
+        </div>
       </div>
 
-      <select className="input" {...register("ocupacion")}>
+      <select
+        className={`w-full input ${errors.ocupacion ? "input-error" : ""}`}
+        {...register("ocupacion")}
+      >
         <option>Funcionario Público</option>
         <option>Empleado</option>
         <option>Independiente</option>
@@ -80,34 +116,67 @@ export function Step3() {
       </select>
 
       <div className="grid md:grid-cols-3 gap-2">
+        <div>
+          <input
+            className={`w-full input ${errors.emergencyName ? "input-error" : ""}`}
+            placeholder="Nombre contacto"
+            {...register("emergencyName")}
+          />
+          {errors.emergencyName && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.emergencyName.message}
+            </p>
+          )}
+        </div>
+        <div>
+          <input
+            className={`w-full input ${errors.emergencyPhone ? "input-error" : ""}`}
+            placeholder="Teléfono contacto"
+            {...register("emergencyPhone")}
+          />
+          {errors.emergencyPhone && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.emergencyPhone.message}
+            </p>
+          )}
+        </div>
+        <div>
+          <input
+            className={`w-full input ${errors.emergencyKinship ? "input-error" : ""}`}
+            placeholder="Parentesco"
+            {...register("emergencyKinship")}
+          />
+          {errors.emergencyKinship && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.emergencyKinship.message}
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* <p className="text-sm font-bold">Ingresa el código envido al correo electrónico ingresado</p>
+
+      <div>
         <input
-          className="input"
-          placeholder="Nombre contacto"
-          {...register("emergencyName")}
+          className={`w-full input ${errors.otpCode ? "input-error" : ""}`}
+          placeholder="Código OTP (6 dígitos)"
+          {...register("otpCode")}
         />
-        <input
-          className="input"
-          placeholder="Teléfono contacto"
-          {...register("emergencyPhone")}
-        />
-        <input
-          className="input"
-          placeholder="Parentesco"
-          {...register("emergencyKinship")}
-        />
+        {errors.otpCode && (
+          <p className="text-red-500 text-sm mt-1">{errors.otpCode.message}</p>
+        )}
       </div>
 
       {(munErr || neiErr) && (
         <div className="text-yellow-400 text-sm">
           No se pudo cargar el catálogo. Intenta de nuevo.
         </div>
-      )}
-      <div className="text-red-400 text-sm">
+      )} */}
+      {/* <div className="text-red-400 text-sm">
         {Object.values(errors).map(
           (e, i) => e && <div key={i}>{String(e.message)}</div>
         )}
-      </div>
-
+      </div> */}
     </div>
   );
 }

@@ -1,14 +1,14 @@
 // apps/web-form/src/features/register/useMunicipalityCatalog.ts
 "use client";
 import useSWR from "swr";
-import { getMunicipalities, getNeighborhoods, type Municipality, type Neighborhood } from "@/lib/api";
+import { getMunicipalities, getNeighborhoods, type Municipality, type Neighborhood } from "@/lib/form.service";
 
 export function useMunicipalities() {
   const { data, error, isLoading } = useSWR<Municipality[]>(
     "municipalities",
     async () => {
       const env = await getMunicipalities();
-      return env.data.sort((a,b)=>a.name.localeCompare(b.name));
+      return env.data.sort((a,b)=>a.nombre.localeCompare(b.nombre));
     },
     { revalidateOnFocus: false }
   );
@@ -23,7 +23,7 @@ export function useNeighborhoods(municipalityId?: string | number) {
     disabled ? null : (["neighborhoods", idStr] as const),
     async ([, id]:string) => {
       const env = await getNeighborhoods(id);
-      return env.data.sort((a,b)=>a.name.localeCompare(b.name));
+      return env.data.sort((a,b)=>a.nombre.localeCompare(b.nombre));
     },
     { revalidateOnFocus: false }
   );

@@ -1,5 +1,6 @@
 "use client";
 import { CameraIcon } from "@heroicons/react/16/solid";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -8,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 type FaceDetectorLike = {
   detect: (
     src: HTMLCanvasElement | HTMLVideoElement
-  ) => Promise<{ detections: any[] }>;
+  ) => Promise<{ detections: object[] }>;
   close?: () => void | Promise<void>;
 };
 
@@ -78,7 +79,7 @@ export function BiometricCapture({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
 
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
@@ -104,7 +105,7 @@ export function BiometricCapture({
           setReady(true);
         }
       } catch {
-        // setError("No se pudo acceder a la cámara.");
+        setError("No se pudo acceder a la cámara.");
       }
     })();
 
@@ -173,55 +174,49 @@ export function BiometricCapture({
   }
 
   return (
-    <div className="grid gap-2">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* video */}
+      <div className="rounded-xl border border-slate-700 p-2 bg-slate-900 flex justify-center">
+        <video ref={videoRef} className="rounded-md" playsInline muted />
+      </div>
+
+      {/* resultado */}
+      {result && (
         <div className="rounded-xl border border-slate-700 p-2 bg-slate-900 flex justify-center">
-          <video
-            ref={videoRef}
-            className="rounded-md"
-            playsInline
-            muted
-          />
-        </div>
-        {result && (
-          <div className="rounded-xl border border-slate-700 p-2 bg-slate-900 flex justify-center">
-            <img
+          <div className="relative w-full h-auto min-h-[200px] max-h-[500px] aspect-square md:aspect-video">
+            <Image
               src={result}
               alt="biometría"
-              className="mt-2  rounded-md border border-slate-700"
+              fill
+              className="rounded-md object-scale-down"
+              unoptimized
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 70vw"
+              priority
             />
           </div>
-        )}
-
-        {/* canvas oculto */}
-        <canvas ref={canvasRef} className="hidden" />
-      </div>
-
-      <div className="gap-3 flex flex-col items-start md:flex-row md:items-center">
-        {error && <p className="text-sm text-red-400">{error}</p>}
-        {!error && (
-          <p className="text-xs opacity-70">
-            Requiere buena iluminación y rostro centrado.
-          </p>
-        )}
-
-        <div className="grid grid-cols-1 gap-2">
-          <button
-            type="button"
-            onClick={analyzeAndCapture}
-            disabled={!ready}
-            aria-label="Capturar"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full
-               bg-sky-600 hover:bg-sky-500 active:bg-sky-700
-               disabled:opacity-50 disabled:cursor-not-allowed
-               focus:outline-none focus:ring-2 focus:ring-sky-500"
-            title="Capturar"
-          >
-            <CameraIcon className="h-5 w-5" />
-            <span className="sr-only">Capturar</span>
-          </button>
         </div>
+      )}
+
+      {/* botón centrado */}
+      <div className="md:col-span-2 flex justify-center">
+        <button
+          type="button"
+          onClick={analyzeAndCapture}
+          disabled={!ready}
+          aria-label="Capturar"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-full
+                 bg-sky-600 hover:bg-sky-500 active:bg-sky-700
+                 disabled:opacity-50 disabled:cursor-not-allowed
+                 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          title="Capturar"
+        >
+          <CameraIcon className="h-5 w-5" />
+          <span className="sr-only">Capturar</span>
+        </button>
       </div>
+
+      {/* canvas oculto */}
+      <canvas ref={canvasRef} className="hidden" />
     </div>
   );
 }

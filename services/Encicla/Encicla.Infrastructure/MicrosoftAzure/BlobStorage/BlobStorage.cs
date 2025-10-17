@@ -1,38 +1,51 @@
-﻿using Azure.Storage.Blobs;
+﻿using Azure.Identity;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Encicla.Application.Abstractions.Services;
+using Encicla.Application.DTOs.Registration;
 using Microsoft.Extensions.Options;
 
 namespace Encicla.Infrastructure.MicrosoftAzure.BlobStorage
 {
-    public class BlobOptions
+    public class StorageOptions
     {
-        public string ConnectionString { get; set; } = default!;
-        public string Container { get; set; } = "encicla";
+        public string AccountUrl { get; set; } = "https://stenciclaprd01.blob.core.windows.net";
+        public string Container { get; set; } = "stenciclaprd01";
     }
     public class AzureBlobStorage : IBlobStorage
     {
+        private readonly BlobServiceClient _svc;
         private readonly BlobContainerClient _container;
 
-        public AzureBlobStorage(IOptions<BlobOptions> options)
+        public AzureBlobStorage(IOptions<StorageOptions> opt)
         {
-            var cfg = options.Value;
-            var service = new BlobServiceClient(cfg.ConnectionString);
-            _container = service.GetBlobContainerClient(cfg.Container);
-            _container.CreateIfNotExists();
+            // Managed Identity por defecto; si usas SP, configúralo en DI.
+            _svc = new BlobServiceClient(new Uri(opt.Value.AccountUrl), new DefaultAzureCredential());
+            _container = _svc.GetBlobContainerClient(opt.Value.Container);
         }
 
-        public async Task<string> UploadAsync(Stream content, string contentType, string fileName, CancellationToken ct)
+        public async Task<StoredFile> SaveAsync(Stream content, string blobPath, string contentType, CancellationToken ct)
         {
-            var id = $"{Guid.NewGuid()}_{fileName}";
-            var blob = _container.GetBlobClient(id);
-            await blob.UploadAsync(content, new Azure.Storage.Blobs.Models.BlobHttpHeaders { ContentType = contentType }, cancellationToken: ct);
-            return id;
+            var blob = _container.GetBlobClient(blobPath);
+            await blob.UploadAsync(content, new BlobUploadOptions
+            {
+                HttpHeaders = new BlobHttpHeaders { ContentType = contentType }
+            }, ct);
+            return new StoredFile(blobPath, blob.Uri);
         }
 
-        public Task<Stream> DownloadAsync(string blobId, CancellationToken ct)
+        public async Task MoveAsync(string fromPath, string toPath, CancellationToken ct)
         {
-            var blob = _container.GetBlobClient(blobId);
-            return blob.OpenReadAsync(cancellationToken: ct);
+            var src = _container.GetBlobClient(fromPath);
+            var dst = _container.GetBlobClient(toPath);
+            await dst.StartCopyFromUriAsync(src.Uri, cancellationToken: ct);
+            await src.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots, cancellationToken: ct);
         }
+
+        public Task DeleteAsync(string blobPath, CancellationToken ct)
+            => _container.GetBlobClient(blobPath).DeleteIfExistsAsync(cancellationToken: ct);
+
+        public async Task<bool> ExistsAsync(string blobPath, CancellationToken ct)
+            => (await _container.GetBlobClient(blobPath).ExistsAsync(ct)).Value;
     }
 }

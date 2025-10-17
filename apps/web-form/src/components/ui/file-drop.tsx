@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowUpTrayIcon, DocumentIcon, PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import Image from 'next/image';
 
 type FileDropProps = {
   id?: string;
@@ -68,7 +69,7 @@ export function FileDrop({ id, label, description, accept, value, error, onChang
           <div className="flex items-center gap-4">
             <div className="shrink-0">
               {isImage ? (
-                <img src={previewUrl} alt="preview" className="h-16 w-16 object-cover rounded-md border border-slate-700" />
+                <Image src={previewUrl} alt="preview" className="h-16 w-16 object-cover rounded-md border border-slate-700" />
               ) : isPdf ? (
                 <div className="h-16 w-16 grid place-content-center rounded-md border border-slate-700">
                   <DocumentIcon className="h-8 w-8" />
