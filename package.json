@@ -1,0 +1,16 @@
+{
+  "name": "encicla",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:api": "dotnet watch --project services/api",
+    "dev:web-form": "pnpm --filter web-form dev",
+    "dev:web-admin": "pnpm --filter web-admin dev",
+    "dev": "concurrently -k \"pnpm dev:api\" \"pnpm dev:web-form\" \"pnpm dev:web-admin\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}
