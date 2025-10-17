@@ -1,3 +1,4 @@
+ 
 // apps/web-form/src/lib/api.service.ts
 const API_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ??
@@ -82,7 +83,7 @@ apiClient.interceptors.request.use(
       const token = getToken();
       if (token && !isExpired()) {
         config.headers = config.headers ?? {};
-        (config.headers as any).Authorization = `Bearer ${token}`;
+        (config.headers).Authorization = `Bearer ${token}`;
         // config.headers.Authorization = `Bearer ${token}`;
       }
     }

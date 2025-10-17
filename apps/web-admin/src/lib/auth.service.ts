@@ -1,6 +1,8 @@
+ 
 import { apiService } from './api.service';
 import type { CreateTokenDto, CreateTokenResponse } from '@/types/auth';
 import { saveSession, clearSession, isExpired, saveRoles } from '@/lib/auth';
+import { EnciclaUserDto } from '@/types/user';
 
 type MaybeRole =
   | string
@@ -18,7 +20,7 @@ const norm = (r: MaybeRole): string | null => {
 const slug = (s: string) =>
   s.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
 
-function decodeJwt<T = any>(token: string): T {
+function decodeJwt<T = unknown>(token: string): T {
   const [, payload] = token.split('.');
   const json = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
   return JSON.parse(json);
@@ -26,7 +28,7 @@ function decodeJwt<T = any>(token: string): T {
 
 export function extractRolesFromResponse(res: CreateTokenResponse): string[] {
   // 1) Body: user.usuarioRoles puede ser array de objetos
-  const byUserRaw = ((res.user as any)?.usuarioRoles ?? []) as MaybeRole[];
+  const byUserRaw = ((res.user as EnciclaUserDto)?.usuarioRoles ?? []) as MaybeRole[];
   const byUser = byUserRaw.map(norm).filter(Boolean) as string[];
 
   // 2) JWT: distintos claims posibles

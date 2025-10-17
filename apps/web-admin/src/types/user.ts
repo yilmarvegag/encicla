@@ -44,6 +44,7 @@ export interface EnciclaUserDto {
   lockoutEnd: string | null;
   lockoutEnabled: boolean;
   accessFailedCount: number;
+  usuarioRoles: [];
 }
 
 // === Fila para la tabla ===

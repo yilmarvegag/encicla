@@ -23,7 +23,7 @@ export function useIdleLogout() {
     const evs: (keyof DocumentEventMap | keyof WindowEventMap)[] = [
       'mousemove','mousedown','keydown','scroll','touchstart','visibilitychange'
     ];
-    evs.forEach((e) => window.addEventListener(e as any, onActivity, { passive: true }));
+    evs.forEach((e) => window.addEventListener(e, onActivity, { passive: true }));
 
     // pulso para revisar expiración del token
     beat.current = setInterval(() => {
@@ -36,7 +36,7 @@ export function useIdleLogout() {
     reset(); // inicia
 
     return () => {
-      evs.forEach((e) => window.removeEventListener(e as any, onActivity));
+      evs.forEach((e) => window.removeEventListener(e, onActivity));
       if (timer.current) clearTimeout(timer.current);
       if (beat.current) clearInterval(beat.current);
     };

@@ -3,11 +3,11 @@ import { cookies } from 'next/headers';
 
 export async function readSession() {
   const c = await cookies();
-  const token  = c.get('encicla_token')?.value ?? null;
-  const expStr = c.get('encicla_exp')?.value ?? null;
+  const token: string | null  = c.get('encicla_token')?.value ?? null;
+  const expStr: string | null = c.get('encicla_exp')?.value ?? null;
 
-  const expMs   = expStr ? new Date(expStr).getTime() : NaN;
-  const expired = !expStr || isNaN(expMs) || Date.now() > (expMs - 30_000); // skew 30s
+  const expMs: number | null   = expStr ? new Date(expStr).getTime() : NaN;
+  const expired: boolean = !expStr || isNaN(expMs) || Date.now() > (expMs - 30_000); // skew 30s
 
   return {
     loggedIn: Boolean(token) && !expired,
