@@ -9,9 +9,14 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
+type TableMeta<TData> = {
+  patchRow?: (id: string, patch: Partial<TData>) => void;
+  refresh?: () => void; 
+  onChanged?: (updater?: (prev: TData[]) => TData[]) => void;
+};
 
 type Props<TData> = {
-  columns: ColumnDef<TData, unknown>[];
+  columns: ColumnDef<TData, any>[];
   data: TData[];
   emptyMessage?: string;
   meta?: { onChanged?: (updater?: (prev: TData[]) => TData[]) => void };

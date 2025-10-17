@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { login } from '@/lib/auth.service';
 import Image from 'next/image';
-import { AxiosError } from 'axios';
 
 export default function LoginForm({ redirect }: { redirect: string }) {
   const router = useRouter();
@@ -19,9 +18,8 @@ export default function LoginForm({ redirect }: { redirect: string }) {
     try {
       await login({ username, password });
       router.replace(redirect);
-    } catch (err) {
-      const e = err as AxiosError<{ message?: string }>;
-      setErr(e.response?.data?.message ?? 'Error de autenticación');
+    } catch (ex: any) {
+      setErr(ex?.message ?? 'Error de autenticación');
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,4 @@
-# apps/web-admin/Dockerfile (VERSIÓN CORREGIDA)
+# apps/web-form/Dockerfile (VERSIÓN CORREGIDA)
 FROM node:18-alpine
 
 # Instalar pnpm

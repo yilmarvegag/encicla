@@ -9,10 +9,12 @@ export function ToggleEnabledButton({
   enabled: isEnabled,
   table,
   row,
+  onDone,
 }: {
   enabled: boolean;
   table: Table<UserOutputDto>;
   row: UserOutputDto;
+  onDone?: () => void;
 }) {
   const [busy, setBusy] = useState(false);
   async function toggle() {
