@@ -1,15 +1,15 @@
 'use client';
-import { useState } from 'react';
 import type { ColumnDef, Table } from '@tanstack/react-table';
 import type { UserOutputDto } from '@/types/user';
 import { getRoles } from '@/lib/auth';
 import { ToggleEnabledButton } from './toggle-enabled-button';
 import { EditUserDialog } from './edit-user-dialog';
+import Image from 'next/image';
 
 const isAdmin = getRoles().map(r => r.toLowerCase()).includes('administrador');
 
 declare module '@tanstack/react-table' {
-  interface TableMeta<TData extends unknown> {
+  interface TableMeta<TData> {
     onChanged?: (updater?: (prev: TData[]) => TData[]) => void;
   }
 }
@@ -27,9 +27,11 @@ export const userColumns: ColumnDef<UserOutputDto>[] = [
       const r = row.original;
       return (
         <div className="flex items-center gap-3">
-          <img
+          <Image
             src={r.avatarUrl}
             alt="Imagen de usuario"
+            width={32}
+            height={32}
             className="size-8 rounded-full border border-slate-700 object-cover"
           />
           <div>
