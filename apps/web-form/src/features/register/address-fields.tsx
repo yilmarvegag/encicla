@@ -25,7 +25,7 @@ export function AddressFields() {
   const numero = watch("numero");
   const letra = watch("letra");
   const compNum = watch("compNum");
-  const comp2 = watch("comp2");
+  // const comp2 = watch("comp2");
   const viaComp2 = watch("viaComp2");
   const apto = watch("apto");
 
@@ -40,7 +40,7 @@ export function AddressFields() {
       letra,
       viaComp2,
       compNum,
-      comp2,
+      // comp2,
       apto,
     });
     setValue("address", addr, { shouldValidate: true });
@@ -54,7 +54,7 @@ export function AddressFields() {
     letra,
     viaComp2,
     compNum,
-    comp2,
+    // comp2,
     apto,
     setValue,
   ]);
@@ -160,7 +160,7 @@ export function AddressFields() {
           )}
         </div>
 
-        <div>
+        {/* <div>
           <select className="input" {...register("comp2")}>
             {LETRA_OPTIONS.map((v) => (
               <option key={v} value={v}>
@@ -168,9 +168,9 @@ export function AddressFields() {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
 
-        <div className="md:col-span-3 lg:col-span-3">
+        <div className="md:col-span-4 lg:col-span-4">
           <input
             className={`w-full input ${errors.apto ? "input-error" : ""}`}
             {...register("apto")}
