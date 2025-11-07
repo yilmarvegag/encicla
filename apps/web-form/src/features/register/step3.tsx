@@ -104,6 +104,7 @@ export function Step3() {
         </div>
       </div>
 
+      <p className="text-sm font-bold">Profesión / Ocupación</p>
       <select
         className={`w-full input ${errors.ocupacion ? "input-error" : ""}`}
         {...register("ocupacion")}
@@ -115,6 +116,7 @@ export function Step3() {
         <option>Desempleado</option>
       </select>
 
+        <p className="text-sm font-bold">Información Contacto de Emergencia</p>
       <div className="grid md:grid-cols-3 gap-2">
         <div>
           <input

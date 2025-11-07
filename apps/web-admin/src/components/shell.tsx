@@ -3,6 +3,7 @@
 
 import { useIdleLogout } from "@/hooks/useIdleLogout";
 import { logout } from "@/lib/auth";
+import Link from "next/link";
 
 export function Shell({ children }: { children: React.ReactNode }) {
   useIdleLogout(); // 20 minutos por defecto o NEXT_PUBLIC_IDLE_MINUTES
@@ -18,30 +19,30 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
         <ul className="space-y-1">
           <li>
-            <a
+            <Link
               href="/"
               className="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200 hover:dark:bg-gray-900"
             >
               General
-            </a>
+            </Link>
           </li>
           <li>
-            <a
+            <Link
               href="/users"
               className="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200 hover:dark:bg-gray-900"
             >
               Usuarios Encicla
-            </a>
+            </Link>
           </li>
           <li>
-            <a
+            <Link
               href="/"
               className="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200 hover:dark:bg-gray-900"
             >
               <button className="hover:cursor-pointer" onClick={onLogout}>
                 Cerrar sesión
               </button>
-            </a>
+            </Link>
           </li>
         </ul>
       </aside>

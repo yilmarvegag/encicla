@@ -58,7 +58,7 @@ export function buildAddress(parts: {
   letra?: string;
   viaComp2?: string;
   compNum: number;
-  comp2?: string;
+  // comp2?: string;
   apto: string;
 }) {
 
@@ -77,7 +77,7 @@ export function buildAddress(parts: {
   if (parts.viaComp2 && parts.viaComp2 !== "No aplica") p.push(parts.viaComp2);
   if (parts.compNum) p.push("-", `${parts.compNum}`);
 
-  if (parts.comp2 && parts.comp2 !== "No aplica") p.push(parts.comp2);
+  // if (parts.comp2 && parts.comp2 !== "No aplica") p.push(parts.comp2);
   // if (parts.num2) p.push(parts.num2);
 
   if (parts.apto) p.push(",", parts.apto);
