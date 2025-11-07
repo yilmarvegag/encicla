@@ -12,14 +12,17 @@ import { Step3 } from "@/features/register/step3";
 // import { checkDocumentExists, sendOtp, submitRegistration, verifyOtp } from "@/lib/form.service";
 import {
   ApiResponseLegacy,
+  extractIdFromResponse,
   // attachRoleToUser,
   submitRegistration,
+  uploadRegistrationFiles,
   // uploadRegistrationFiles,
 } from "@/lib/form.service";
 import { StepsHeader } from "@/components/ui/StepsHeader";
 import { mapFormToLegacyUser } from "@/lib/legacy.mapping";
 import { notify } from "@/lib/toast";
 import { toast } from "react-toastify";
+import { dataUrlToFile } from "@/lib/formdata.util";
 
 export default function Page() {
   const stepper = useStepper();
@@ -52,7 +55,7 @@ export default function Page() {
     // console.info("[FORM VALUES]", values);
     try {
       if (stepper.isLast) {
-        const id = toast.loading('Enviando tu registro…');
+        const id = toast.loading("Enviando tu registro…");
         const allFields = form.getValues();
         // 1) verificar OTP con email del step1 y otpCode del step3
         // const ok = await verifyOtp({ email: allFields.email, code: allFields.otpCode });
@@ -98,52 +101,34 @@ export default function Page() {
         const payload = mapFormToLegacyUser(step1, step2, step3);
         const resp: ApiResponseLegacy = await submitRegistration(payload);
         toast.dismiss(id); // cierra el spinner
-        // console.info(resp);
+        console.info(resp);
         if (resp?.isSuccess) {
-          //2) attach role
-          // const attachData = {
-          //   estrategiaId: 4,
-          //   fechaInicio: new Date().toISOString(),
-          //   rolId: process.env.NEXT_PUBLIC_WS_ROL_ID || "",
-          //   usuarioId: resp.result?.id,
-          //   usuarioEstadoId: 4,
-          //   serialId: 0,
-          //   tipoUsoId: 4,
-          //   tipoIncumplimientoId: null,
-          // };
-          // const attach = await attachRoleToUser(attachData);
-          // 3) si todo OK, subir archivos, pendiente con backend
-          // // const idFront = allFields.idFront,
-          // //   idBack = allFields.idBack,
-          // //   passportFile = allFields.passportFile,
-          // //   guardianId = allFields.guardianId,
-          // //   authorizationLetter = allFields.authorizationLetter,
-          // //   signedContract = allFields.signedContract,
-          // //   biometricImage = allFields.biometricImage,
-          // //   signaturePng = allFields.signaturePng;
+          const userId = extractIdFromResponse(resp);
+          // 3) subir archivos
+          const {
+            idFront,
+            idBack,
+            passportFile,
+            guardianId,
+            authorizationLetter,
+            signedContract,
+          } = allFields;
 
-          // const files = await uploadRegistrationFiles(resp.result?.id || 0, {
-          //   idFront,
-          //   idBack,
-          //   passportFile,
-          //   guardianId,
-          //   authorizationLetter,
-          //   signedContract,
-          //   biometricImage,
-          //   signaturePng,
-          // });
-          // console.log("[RESP FILES]", files);
-
-          // 4) mensaje final de error si no se subieron los archivos
-          // if (files.status !== 200) {
-          //   alert(
-          //     "El formulario se envió pero hubo un problema subiendo los archivos. Por favor contacta al administrador."
-          //   );
-          //   return;
-          // }
-
-          // alert("¡Formulario enviado!");
-          // alert("¡Formulario enviado! Pronto recibirás noticias nuestras.");
+          const files = await uploadRegistrationFiles(userId || "999", {
+            idFront,
+            idBack,
+            passportFile,
+            guardianId,
+            authorizationLetter,
+            signedContract,
+            biometricImage: (typeof allFields.biometricImage === "string"
+              ? dataUrlToFile(allFields.biometricImage, "biometric.jpg")
+              : allFields.biometricImage) as File | undefined,
+            signaturePng: (typeof allFields.signatureDataUrl === "string"
+              ? dataUrlToFile(allFields.signatureDataUrl, "signature.png")
+              : allFields.signaturePng) as File | undefined,
+          });
+          // console.info("[FILES UPLOADED]", files);
           notify.success(resp.message || "¡Formulario enviado!");
           form.reset();
           stepper.reset();

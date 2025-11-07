@@ -5,8 +5,17 @@ import { apiService } from "./api.service";
 export type ApiResponseLegacy<T = unknown> = {
   isSuccess: boolean;
   message?: string;
-  data?: T;
+  result?: T;
 };
+
+export function extractIdFromResponse(
+  resp: ApiResponseLegacy<{ id?: string | number } | { Id?: string | number } | any>
+): string {
+  const payload = resp?.result ?? resp?.result ?? {};
+  const raw = payload.id ?? payload.Id;
+  if (raw == null) throw new Error('La respuesta no contiene id');
+  return String(raw);
+}
 
 // ---------- STEP 1 ----------
 
@@ -120,9 +129,9 @@ export async function submitRegistration(allValues: any):Promise<ApiResponseLega
   return apiService.post<ApiResponseLegacy>(`/account/postregisteruser`, data);
 }
 
-export async function attachRoleToUser(attachData: any) {
-  return apiService.postForm<any>(`/usuariorols/postusuariorol`, attachData);
-}
+// export async function attachRoleToUser(attachData: any) {
+//   return apiService.postForm<any>(`/usuariorols/postusuariorol`, attachData);
+// }
 
 export async function uploadRegistrationFiles(idUser: string, files: Partial<Record<string, File>>) {
   const fd = new FormData();
