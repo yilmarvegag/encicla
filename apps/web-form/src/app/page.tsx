@@ -57,6 +57,24 @@ export default function Page() {
       if (stepper.isLast) {
         const id = toast.loading("Enviando tu registro…");
         const allFields = form.getValues();
+
+        // Validar que el teléfono de contacto y el de emergencia no sean iguales
+        if (
+          allFields.phone &&
+          allFields.emergencyPhone &&
+          allFields.phone === allFields.emergencyPhone
+        ) {
+          form.setError("emergencyPhone" as any, {
+            type: "manual",
+            message:
+              "El teléfono de emergencia debe ser diferente al teléfono de contacto.",
+          });
+          notify.error(
+            "El teléfono de emergencia debe ser diferente al teléfono de contacto."
+          );
+          toast.dismiss(id);
+          return;
+        }
         // 1) verificar OTP con email del step1 y otpCode del step3
         // const ok = await verifyOtp({ email: allFields.email, code: allFields.otpCode });
         // if (!(ok?.data === true)) {
@@ -79,6 +97,10 @@ export default function Page() {
           documentNumber: allFields.documentNumber,
           email: allFields.email,
           phone: allFields.phone,
+          sex: allFields.sexAssignedAtBirth,
+          pin: allFields.pin,
+          habeas: allFields.habeas,
+          terms: allFields.terms,
         };
 
         const step2 = {
@@ -89,7 +111,7 @@ export default function Page() {
 
         const step3 = {
           address: allFields.address,
-          municipio: allFields.municipio,
+          municipio: allFields.municipioNombre,
           comuna: allFields.comuna,
           barrio: allFields.barrio,
           ocupacion: allFields.ocupacion,
@@ -101,7 +123,7 @@ export default function Page() {
         const payload = mapFormToLegacyUser(step1, step2, step3);
         const resp: ApiResponseLegacy = await submitRegistration(payload);
         toast.dismiss(id); // cierra el spinner
-        console.info(resp);
+        // console.info(resp);
         if (resp?.isSuccess) {
           const userId = extractIdFromResponse(resp);
           // 3) subir archivos

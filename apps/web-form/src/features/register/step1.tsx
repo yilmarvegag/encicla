@@ -151,6 +151,48 @@ export function Step1() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1 py-2">
+            Sexo *
+          </label>
+          <select
+            className={`w-full input ${
+              errors.sexAssignedAtBirth ? "input-error" : ""
+            }`}
+            {...register("sexAssignedAtBirth")}
+          >
+            <option value="">Selecciona una opción</option>
+            <option value="H">Hombre</option>
+            <option value="M">Mujer</option>
+          </select>
+          {errors.sexAssignedAtBirth && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.sexAssignedAtBirth.message}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1 py-2">
+            PIN de acceso (4 dígitos) *
+          </label>
+          <input
+            type="password"
+            inputMode="numeric"
+            maxLength={4}
+            className={`w-full input ${errors.pin ? "input-error" : ""}`}
+            placeholder="****"
+            {...register("pin")}
+          />
+          {errors.pin && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.pin.message}
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
           <label
             className={`flex items-center gap-2 p-2 rounded-md ${
               errors.habeas ? "border border-red-600 bg-red-900/20" : ""

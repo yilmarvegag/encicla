@@ -7,6 +7,8 @@ type Step1 = {
   documentNumber: string;
   email: string;
   phone: string;
+  sex: string;
+  pin: string;
 };
 
 type Step2 = {
@@ -87,9 +89,9 @@ export function mapFormToLegacyUser(step1: Step1, step2: Step2, step3: Step3) {
     // Campos fijos / obligatorios en el modelo legacy
     // (no los tenemos en el formulario, así que van con valores por defecto)
     numeroCelular: step1.phone,
-    pin: "9999",
+    pin: step1.pin,
     fechaNacimiento: "1900-01-01", //default
-    sexo: "N",
+    sexo: step1.sex,
     estrato: "0",
     ocupacion: step3.ocupacion,
     empresa: "NOT_SPECIFIED",

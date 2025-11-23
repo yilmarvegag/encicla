@@ -8,9 +8,14 @@ import {
   DocumentArrowDownIcon,
   PhotoIcon,
 } from "@heroicons/react/24/outline";
-// import Image from "next/image";
+import { notify } from "@/lib/toast";
 
-type UploadName = "idDoc" | "passportFile" | "guardianId" | "authorizationLetter";
+type UploadName =
+  | "idFront"
+  | "idBack"
+  | "passportFile"
+  | "guardianId"
+  | "authorizationLetter";
 
 type SpecItem = {
   name: UploadName;
@@ -22,27 +27,75 @@ type SpecItem = {
 
 // Campos obligatorios por tipo de usuario (para asterisco y UX)
 const REQUIRED_BY_TYPE: Record<Step2Values["userType"], UploadName[]> = {
-  Residente: ["idDoc"],
-  VisitanteNacional: ["idDoc"],
+  Residente: ["idFront", "idBack"],
+  VisitanteNacional: ["idFront", "idBack"],
   VisitanteExtranjero: ["passportFile"],
-  MenorEdad: ["idDoc", "guardianId", "authorizationLetter"],
+  MenorEdad: ["idFront", "idBack", "guardianId", "authorizationLetter"],
 };
 
 // Especificación de campos por tipo de usuario
 const SPEC_BY_TYPE: Record<Step2Values["userType"], SpecItem[]> = {
   Residente: [
-    { name: "idDoc", label: "Documento de identidad", accept: "application/pdf,image/*" },
+    {
+      name: "idFront",
+      label: "Cédula - cara frontal",
+      accept: "image/*",
+      hint: "Imagen (máx. 10MB)",
+    },
+    {
+      name: "idBack",
+      label: "Cédula - cara posterior",
+      accept: "image/*",
+      hint: "Imagen (máx. 10MB)",
+    },
   ],
   VisitanteNacional: [
-    { name: "idDoc", label: "Documento de identidad", accept: "application/pdf,image/*" },
+    {
+      name: "idFront",
+      label: "Documento de identidad - frente",
+      accept: "image/*",
+      hint: "Imagen (máx. 10MB)",
+    },
+    {
+      name: "idBack",
+      label: "Documento de identidad - reverso",
+      accept: "image/*",
+      hint: "Imagen (máx. 10MB)",
+    },
   ],
   VisitanteExtranjero: [
-    { name: "passportFile", label: "Pasaporte (PDF o imagen)", accept: "application/pdf,image/*" },
+    {
+      name: "passportFile",
+      label: "Pasaporte (PDF o imagen)",
+      accept: "application/pdf,image/*",
+      hint: "PDF o imagen (máx. 10MB)",
+    },
   ],
   MenorEdad: [
-    { name: "idDoc", label: "Tarjeta de identidad", accept: "application/pdf,image/*" },
-    { name: "guardianId", label: "Documento del acudiente", accept: "application/pdf,image/*" },
-    { name: "authorizationLetter", label: "Carta de autorización (PDF)", accept: "application/pdf" },
+    {
+      name: "idFront",
+      label: "Tarjeta de identidad - frente",
+      accept: "image/*",
+      hint: "Imagen (máx. 10MB)",
+    },
+    {
+      name: "idBack",
+      label: "Tarjeta de identidad - reverso",
+      accept: "image/*",
+      hint: "Imagen (máx. 10MB)",
+    },
+    {
+      name: "guardianId",
+      label: "Documento del acudiente",
+      accept: "application/pdf,image/*",
+      hint: "PDF o imagen (máx. 10MB)",
+    },
+    {
+      name: "authorizationLetter",
+      label: "Carta de autorización (PDF)",
+      accept: "application/pdf",
+      hint: "PDF (máx. 10MB)",
+    },
   ],
 };
 
@@ -86,19 +139,21 @@ function UploadField({ name, label, accept, hint, maxSizeMB = 10 }: SpecItem) {
     const f = fs[0];
 
     // Validaciones rápidas (client)
-    const okType = accept.split(",").some((a) =>
-      a.trim() === "image/*"
-        ? f.type.startsWith("image/")
-        : a.trim() === "application/pdf"
-        ? f.type === "application/pdf"
-        : true
-    );
+    const okType = accept
+      .split(",")
+      .some((a) =>
+        a.trim() === "image/*"
+          ? f.type.startsWith("image/")
+          : a.trim() === "application/pdf"
+            ? f.type === "application/pdf"
+            : true
+      );
     if (!okType) {
-      alert("Tipo de archivo no permitido.");
+      notify.error("Tipo de archivo no permitido.");
       return;
     }
     if (f.size > maxSizeMB * 1024 * 1024) {
-      alert(`Tamaño máximo ${maxSizeMB}MB`);
+      notify.error(`Tamaño máximo ${maxSizeMB}MB`);
       return;
     }
 
@@ -134,8 +189,8 @@ function UploadField({ name, label, accept, hint, maxSizeMB = 10 }: SpecItem) {
           dragOver
             ? "border-sky-500 bg-sky-500/10"
             : hasError
-            ? "border-red-600 bg-red-900/10"
-            : "border-slate-700 hover:border-slate-600 hover:bg-slate-800/50",
+              ? "border-red-600 bg-red-900/10"
+              : "border-slate-700 hover:border-slate-600 hover:bg-slate-800/50",
         ].join(" ")}
         aria-invalid={hasError}
       >
@@ -145,10 +200,14 @@ function UploadField({ name, label, accept, hint, maxSizeMB = 10 }: SpecItem) {
 
         <div className="flex-1 text-sm">
           <p className="font-medium">
-            {file ? "Archivo seleccionado" : "Arrastra y suelta o haz clic para subir"}
+            {file
+              ? "Archivo seleccionado"
+              : "Arrastra y suelta o haz clic para subir"}
           </p>
           <p className="opacity-70 text-xs">
-            {file ? `${file.name} — ${formatBytes(file.size)}` : hint ?? "PDF o imagen (máx. 10MB)"}
+            {file
+              ? `${file.name} — ${formatBytes(file.size)}`
+              : (hint ?? "PDF o imagen (máx. 10MB)")}
           </p>
         </div>
 
@@ -193,7 +252,6 @@ function UploadField({ name, label, accept, hint, maxSizeMB = 10 }: SpecItem) {
             aria-hidden
           />
         )}
-
       </label>
 
       <input
@@ -223,6 +281,7 @@ export function IdDocsUploader() {
     // agrega asterisco a los obligatorios
     return spec.map((s) => ({
       ...s,
+      hint: s.hint,
       label: `${s.label}${requiredSet.has(s.name) ? " *" : ""}`,
       maxSizeMB: s.maxSizeMB ?? 10,
     }));
@@ -234,11 +293,6 @@ export function IdDocsUploader() {
         {items.map((it) => (
           <UploadField key={it.name} {...it} />
         ))}
-      </div>
-
-      <div className="flex items-center gap-2 text-xs opacity-70 mt-1">
-        <PhotoIcon className="h-4 w-4" />
-        <span>Admite JPG/PNG y PDF — máximo 10MB por archivo.</span>
       </div>
     </div>
   );

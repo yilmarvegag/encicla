@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import type { Step2Values } from "./schemas";
 import { ContractGateSimple } from "./contract-gate-simple";
@@ -7,14 +7,11 @@ import { ContractSign } from "./contract-sign";
 import { BiometricCapture } from "./biometric-capture";
 import { IdDocsUploader } from "./id-docs-uploader";
 import { useStepper } from "./stepper";
+import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
 
 // union y type guard para documentType
-const DOC_TYPES = [
-  "CC",
-  "TI",
-  "CE",
-  "PA",
-] as const;
+const DOC_TYPES = ["CC", "TI", "CE", "PA"] as const;
 type DocType = (typeof DOC_TYPES)[number];
 function toDocType(v: unknown): DocType {
   return (DOC_TYPES as readonly string[]).includes(v as string)
@@ -29,7 +26,9 @@ export function Step2() {
     watch,
     formState: { errors },
   } = useFormContext<Step2Values>();
+
   const docType = watch("userType");
+  const [showCivicaHelp, setShowCivicaHelp] = useState(false);
 
   const { getMetadata } = useStepper();
 
@@ -46,7 +45,8 @@ export function Step2() {
     register("signedContract");
     register("biometricOk");
     register("biometricImage");
-    register("idDoc");
+    register("idFront");
+    register("idBack");
     register("passportFile");
     register("guardianId");
     register("authorizationLetter");
@@ -68,36 +68,94 @@ export function Step2() {
           </select>
         </div>
 
-          {/* Cívica personalizada opcional */}
-        {/* <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 items-center">
+        {docType === "MenorEdad" && (
+          <div className="mt-3 rounded-xl border border-slate-700 bg-slate-800/60 p-3">
+            <p className="text-sm text-gray-200 mb-2">
+              Para menores de edad es obligatorio adjuntar una carta de
+              autorización firmada por el acudiente.
+            </p>
+            <a
+              href="/docs/carta-autorizacion-menor.pdf"
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center text-sm font-medium underline hover:no-underline"
+            >
+              Descargar modelo de carta de autorización
+            </a>
+          </div>
+        )}
+
+        {/* Cívica personalizada opcional */}
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 items-start gap-2">
           <div className="flex items-center mt-4">
-            <label className="">
+            <label className="flex items-center">
               <input
                 type="checkbox"
                 {...register("hasCivica")}
-                className={`h-5 w-5 rounded ${errors.hasCivica ? "accent-red-600" : "accent-sky-500"}`}
+                className={`h-5 w-5 rounded ${
+                  errors.hasCivica ? "accent-red-600" : "accent-sky-500"
+                }`}
               />
-              &nbsp;
-              ¿Tienes Cívica Personalizada?
+              <span className="ml-2">¿Tienes Cívica personalizada?</span>
             </label>
+            <button
+              type="button"
+              onClick={() => setShowCivicaHelp((v) => !v)}
+              className="ml-3 text-sky-400 hover:text-sky-300"
+              aria-label="Ayuda sobre el número de la Cívica"
+            >
+              <QuestionMarkCircleIcon className="h-5 w-5" />
+            </button>
           </div>
+
           <div className="mt-4">
             {watch("hasCivica") && (
               <input
-                className={`mt-2 input ${errors.civicaNumber ? "input-error" : ""}`}
-                placeholder="Número de Cívica personalizada"
+                className={`w-full input ${errors.civicaNumber ? "input-error" : ""}`}
+                placeholder="Primer nombre"
                 {...register("civicaNumber")}
               />
             )}
+            {errors.civicaNumber && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.civicaNumber.message}
+              </p>
+            )}
           </div>
-        </div> */}
+
+          {showCivicaHelp && (
+            <div className="mt-2 col-span-full rounded-xl border border-slate-700 bg-slate-800/70 p-3">
+              <p className="text-xs text-gray-200 mb-2">
+                El número de la tarjeta Cívica está en la parte inferior, como
+                se muestra resaltado en la imagen.
+              </p>
+              <div className="relative w-full max-w-xs mx-auto">
+                <Image
+                  src="/tarjeta-civica.png"
+                  alt="Ejemplo de tarjeta Cívica con número resaltado"
+                  width={460}
+                  height={298}
+                  className="rounded-md"
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="grid gap-4">
         <div>
           {/* Documentos según tipo */}
-            <p className="font-medium mb-2">Tipo de Documento ({docType})</p>
-            <IdDocsUploader />
+          <p className="font-medium mb-2">Tipo de Documento ({docType})</p>
+          <IdDocsUploader />
+          <br />
+          <div className="flex items-center gap-2 text-xs font-bold opacity-70 mt-1">
+            <span>
+              Sube fotos claras de tu cédula por ambos lados. Asegúrate de que
+              se vea completo el documento y que no haya reflejos
+            </span>
+          </div>
         </div>
       </div>
 
@@ -135,7 +193,6 @@ export function Step2() {
             }
           />
         </div>
-        
 
         {(errors.contractAccepted ||
           errors.signatureDataUrl ||

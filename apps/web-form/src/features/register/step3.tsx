@@ -21,10 +21,24 @@ export function Step3() {
     municipalities,
     isLoading: loadingMuns,
   } = useMunicipalities();
+
   const {
     neighborhoods,
     isLoading: loadingNeis,
   } = useNeighborhoods(municipio);
+
+  useEffect(() => {
+    register("municipioNombre");
+  }, [register]);
+    // cuando cambia el municipio, se busca el nombre y se setea el campo oculto
+  useEffect(() => {
+    const found = municipalities.find(
+      (m) => String(m.id) === String(municipio ?? "")
+    );
+    const name = found?.nombre ?? "";
+    setValue("municipioNombre", name, { shouldValidate: true });
+  }, [municipio, municipalities, setValue]);
+
 
   useEffect(() => {
     setValue("barrio", "", { shouldValidate: true });
@@ -155,30 +169,6 @@ export function Step3() {
           )}
         </div>
       </div>
-
-      {/* <p className="text-sm font-bold">Ingresa el código envido al correo electrónico ingresado</p>
-
-      <div>
-        <input
-          className={`w-full input ${errors.otpCode ? "input-error" : ""}`}
-          placeholder="Código OTP (6 dígitos)"
-          {...register("otpCode")}
-        />
-        {errors.otpCode && (
-          <p className="text-red-500 text-sm mt-1">{errors.otpCode.message}</p>
-        )}
-      </div>
-
-      {(munErr || neiErr) && (
-        <div className="text-yellow-400 text-sm">
-          No se pudo cargar el catálogo. Intenta de nuevo.
-        </div>
-      )} */}
-      {/* <div className="text-red-400 text-sm">
-        {Object.values(errors).map(
-          (e, i) => e && <div key={i}>{String(e.message)}</div>
-        )}
-      </div> */}
     </div>
   );
 }

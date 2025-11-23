@@ -2,7 +2,8 @@
   "name": "encicla",
   "private": true,
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "apps/*/*"
   ],
   "scripts": {
     "dev:api": "dotnet watch --project services/api",
