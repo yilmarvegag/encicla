@@ -87,7 +87,8 @@ export function Step2() {
         )}
 
         {/* Cívica personalizada opcional */}
-        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 items-start gap-2">
+        {/* <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 items-start gap-2"> */}
+        <div>
           <div className="flex items-center mt-4">
             <label className="flex items-center">
               <input
@@ -109,36 +110,12 @@ export function Step2() {
             </button>
           </div>
 
-          <div className="mt-4">
-            {watch("hasCivica") && (
-              <input
-                className={`w-full input ${errors.civicaNumber ? "input-error" : ""}`}
-                placeholder="Primer nombre"
-                {...register("civicaNumber")}
-              />
-            )}
-            {errors.civicaNumber && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.civicaNumber.message}
-              </p>
-            )}
-          </div>
-
           {showCivicaHelp && (
             <div className="mt-2 col-span-full rounded-xl border border-slate-700 bg-slate-800/70 p-3">
               <p className="text-xs text-gray-200 mb-2">
-                El número de la tarjeta Cívica está en la parte inferior, como
-                se muestra resaltado en la imagen.
+                El número será consultado directamente en la base
+                de datos del sistema, con el número de documento de identidad, ingresado en el paso anterior.
               </p>
-              <div className="relative w-full max-w-xs mx-auto">
-                <Image
-                  src="/tarjeta-civica.png"
-                  alt="Ejemplo de tarjeta Cívica con número resaltado"
-                  width={460}
-                  height={298}
-                  className="rounded-md"
-                />
-              </div>
             </div>
           )}
         </div>

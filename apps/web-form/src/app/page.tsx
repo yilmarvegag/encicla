@@ -13,6 +13,7 @@ import { Step3 } from "@/features/register/step3";
 import {
   ApiResponseLegacy,
   extractIdFromResponse,
+  getUserByDni,
   // attachRoleToUser,
   submitRegistration,
   uploadRegistrationFiles,
@@ -54,9 +55,9 @@ export default function Page() {
     setIsSubmitting(true);
     // console.info("[FORM VALUES]", values);
     try {
+      const allFields = form.getValues();
       if (stepper.isLast) {
         const id = toast.loading("Enviando tu registro…");
-        const allFields = form.getValues();
 
         // Validar que el teléfono de contacto y el de emergencia no sean iguales
         if (
@@ -75,15 +76,6 @@ export default function Page() {
           toast.dismiss(id);
           return;
         }
-        // 1) verificar OTP con email del step1 y otpCode del step3
-        // const ok = await verifyOtp({ email: allFields.email, code: allFields.otpCode });
-        // if (!(ok?.data === true)) {
-        //   form.setError("otpCode", { type: "manual", message: "OTP incorrecto" });
-        //   return;
-        // }
-
-        // 2) enviar TODO en multipart
-        // si guardaste id de registro en metadata:
         // const regId = stepper.getMetadata("step1")?.id;
         // const allValues = { ...allFields, registrationId: regId };
         // const resp = await submitRegistration(allValues);
@@ -163,23 +155,31 @@ export default function Page() {
         }
       }
 
-      // Paso 1: check doc y enviar OTP si no se ha enviado
-      // if (stepper.isFirst) {
-      //   const { data, status } = await checkDocumentExists(values.documentNumber);
-      //   if (status === 200 && data) {
-      //     form.setError("documentNumber", {
-      //       type: "manual",
-      //       message: "El número de documento ya está registrado",
-      //     });
-      //     return;
-      //   }
-      //   if (!otpSent.current) {
-      //     await sendOtp(values.email);
-      //     otpSent.current = true;
-      //   }
-      //   stepper.next();
-      //   return;
-      // }
+      //
+      if (stepper.isFirst) {
+        // 1) Validación: ¿ya existe usuario con este documento?
+        const id = toast.loading("Validando documento de identidad…");
+        const docType = allFields.documentType;
+        const docNumber = allFields.documentNumber;
+
+        const existingUser = await getUserByDni(docType, docNumber);
+
+        if (existingUser) {
+          // La API respondió 200 con JSON: el usuario ya existe -> NO continuar
+          form.setError("documentNumber" as any, {
+            type: "manual",
+            message:
+              "Ya existe un usuario registrado con este documento en el sistema.",
+          });
+
+          notify.error(
+            "Ya existe un usuario registrado con este documento. No es posible continuar con un nuevo registro. Por favor comunícate con soporte de ser necesario."
+          );
+
+          toast.dismiss(id);
+          return;
+        }
+      }
 
       // Paso 2 → paso 3
       stepper.next();
