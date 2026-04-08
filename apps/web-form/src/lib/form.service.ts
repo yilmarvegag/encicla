@@ -1,5 +1,5 @@
 // apps/web-form/src/lib/api.ts
-import { ResponseData } from "@/types/api.type";
+import { ResponseData, ResponseDataOld } from "@/types/api.type";
 import { apiService } from "./api.service";
 
 export type ApiResponseLegacy<T = unknown> = {
@@ -18,19 +18,28 @@ export function extractIdFromResponse(
 }
 
 // ---------- STEP 1 ----------
+// GET {{baseURL}}/Users/ExistsByDni?dni=CC1007053620
+// dni = tipoDocumento + númeroDocumento (ej: "CC1007053620")
 
-// export function checkDocumentExists(documentNumber: string) {
-//   return apiService.post<ResponseData<boolean>>(`/v1/registration/validate-document`, {
-//     DocumentNumber: documentNumber,
-//   });
-// }
+export async function getUserByDni(
+  documentType: string,
+  documentNumber: string
+): Promise<boolean> {
+  if (!documentType || !documentNumber) return false;
 
-// export function sendOtp(email: string) {
-//   return apiService.post<ResponseData<boolean>>(`/v1/otp/send`, {
-//     email: email,
-//   });
-// }
+  const dni = `${documentType}${documentNumber}`.trim();
 
+  // Llamamos al endpoint del backend
+  const response = await apiService.get<ResponseDataOld>(`/Users/ExistsByDni?dni=${encodeURIComponent(dni)}`);
+
+  // Validamos la respuesta
+  if (!response?.isSuccess) {
+    throw new Error(response?.message ?? "Error validando el documento");
+  }
+
+  // Devuelve true si existe, false si no
+  return !!response.result;
+}
 
 // ---------- STEP 2 ----------
 
@@ -45,28 +54,7 @@ export type UserByDniResponse = {
   dni: string;
 };
 
-// GET {{baseURL}}/Users/GetUserBy_DNI?dni=CC1007053620
-// dni = tipoDocumento + númeroDocumento (ej: "CC1007053620")
-export async function getUserByDni(
-  documentType: string,
-  documentNumber: string
-): Promise<UserByDniResponse | null> {
-  const dni = `${documentType}${documentNumber}`.trim();
-  if (!dni) return null;
 
-  // Este endpoint NO usa ResponseData, devuelve directamente el JSON del usuario
-  // o 204 sin contenido.
-  const data = await apiService.get<any>(
-    `/users/getuserby_DNI?dni=${encodeURIComponent(dni)}`
-  );
-
-  // Para 204 axios suele devolver data = "" o undefined
-  if (data == null || (typeof data === "string" && data.length === 0)) {
-    return null; // no existe
-  }
-
-  return data as UserByDniResponse; // existe
-}
 
 // ---------- Catálogos ----------
 export type Municipality = { id: number; nombre: string };

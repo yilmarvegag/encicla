@@ -8,3 +8,9 @@ export interface ResponseData<T> {
     errors?: string[];
     details?: string;
 }
+
+export interface ResponseDataOld {
+    isSuccess?: boolean;
+    message?: string;
+    result?: boolean;
+}
