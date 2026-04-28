@@ -64,7 +64,7 @@ export const step2Schema = z
       "VisitanteExtranjero",
     ]),
 
-    hasCivica: z.boolean().default(false),
+    hasCivica: z.boolean().default(false).optional(),
     civicaNumber: z.string().optional(),
 
     contractAccepted: z.boolean().refine((v) => v, "Debes aceptar el contrato"),
@@ -84,24 +84,24 @@ export const step2Schema = z
     authorizationLetter: z.any().optional(), // carta autorización
   })
   .superRefine((v, ctx) => {
-    if (v.hasCivica) {
-      const value = (v.civicaNumber ?? "").trim();
+    // if (v.hasCivica) {
+    //   const value = (v.civicaNumber ?? "").trim();
 
-      if (!value) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["civicaNumber"],
-          message: "Debes ingresar el número de tu Cívica personalizada.",
-        });
-      } else if (!/^\d{8}$/.test(value)) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["civicaNumber"],
-          message:
-            "El número de Cívica debe tener exactamente 8 dígitos numéricos.",
-        });
-      }
-    }
+    //   if (!value) {
+    //     ctx.addIssue({
+    //       code: "custom",
+    //       path: ["civicaNumber"],
+    //       message: "Debes ingresar el número de tu Cívica personalizada.",
+    //     });
+    //   } else if (!/^\d{8}$/.test(value)) {
+    //     ctx.addIssue({
+    //       code: "custom",
+    //       path: ["civicaNumber"],
+    //       message:
+    //         "El número de Cívica debe tener exactamente 8 dígitos numéricos.",
+    //     });
+    //   }
+    // }
 
     switch (v.userType) {
       case "Residente":

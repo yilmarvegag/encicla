@@ -1,12 +1,6 @@
 // apps/web-form/src/lib/api.ts
-import { ResponseData, ResponseDataOld } from "@/types/api.type";
+import { ResponseData, ApiResponseLegacy } from "@/types/api.type";
 import { apiService } from "./api.service";
-
-export type ApiResponseLegacy<T = unknown> = {
-  isSuccess: boolean;
-  message?: string;
-  result?: T;
-};
 
 export function extractIdFromResponse(
   resp: ApiResponseLegacy<{ id?: string | number } | { Id?: string | number } | any>
@@ -23,22 +17,22 @@ export function extractIdFromResponse(
 
 export async function getUserByDni(
   documentType: string,
-  documentNumber: string
-): Promise<boolean> {
-  if (!documentType || !documentNumber) return false;
+  documentNumber: string,
+  email: string
+): Promise<ResponseData<boolean>> {
 
   const dni = `${documentType}${documentNumber}`.trim();
 
   // Llamamos al endpoint del backend
-  const response = await apiService.get<ResponseDataOld>(`/Users/ExistsByDni?dni=${encodeURIComponent(dni)}`);
+  const response = await apiService.get<ResponseData<boolean>>(`/Users/ExistsByDni?dni=${encodeURIComponent(dni)}&email=${encodeURIComponent(email)}`);
 
   // Validamos la respuesta
-  if (!response?.isSuccess) {
+  if (!response.status || response.status >= 400) {
     throw new Error(response?.message ?? "Error validando el documento");
   }
 
   // Devuelve true si existe, false si no
-  return !!response.result;
+  return response;
 }
 
 // ---------- STEP 2 ----------

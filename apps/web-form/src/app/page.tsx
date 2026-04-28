@@ -11,7 +11,6 @@ import { Step3 } from "@/features/register/step3";
 
 // import { checkDocumentExists, sendOtp, submitRegistration, verifyOtp } from "@/lib/form.service";
 import {
-  ApiResponseLegacy,
   extractIdFromResponse,
   getUserByDni,
   // attachRoleToUser,
@@ -24,6 +23,7 @@ import { mapFormToLegacyUser } from "@/lib/legacy.mapping";
 import { notify } from "@/lib/toast";
 import { toast } from "react-toastify";
 import { dataUrlToFile } from "@/lib/formdata.util";
+import { ApiResponseLegacy, ResponseData } from "@/types/api.type";
 
 export default function Page() {
   const stepper = useStepper();
@@ -53,11 +53,12 @@ export default function Page() {
 
   const onSubmit = async () => {
     setIsSubmitting(true);
+    let idMsj;
     // console.info("[FORM VALUES]", values);
     try {
       const allFields = form.getValues();
       if (stepper.isLast) {
-        const id = toast.loading("Enviando tu registro…");
+        idMsj = toast.loading("Enviando tu registro…");
 
         // Validar que el teléfono de contacto y el de emergencia no sean iguales
         if (
@@ -70,15 +71,12 @@ export default function Page() {
             message:
               "El teléfono de emergencia debe ser diferente al teléfono de contacto.",
           });
+          toast.dismiss(idMsj);
           notify.error(
-            "El teléfono de emergencia debe ser diferente al teléfono de contacto."
+            "El teléfono de emergencia debe ser diferente al teléfono de contacto.",
           );
-          toast.dismiss(id);
           return;
         }
-        // const regId = stepper.getMetadata("step1")?.id;
-        // const allValues = { ...allFields, registrationId: regId };
-        // const resp = await submitRegistration(allValues);
 
         const step1 = {
           firstName: allFields.firstName,
@@ -114,9 +112,9 @@ export default function Page() {
 
         const payload = mapFormToLegacyUser(step1, step2, step3);
         const resp: ApiResponseLegacy = await submitRegistration(payload);
-        toast.dismiss(id); // cierra el spinner
         // console.info(resp);
         if (resp?.isSuccess) {
+          toast.dismiss(idMsj);
           const userId = extractIdFromResponse(resp);
           // 3) subir archivos
           const {
@@ -128,7 +126,8 @@ export default function Page() {
             signedContract,
           } = allFields;
 
-          const files = await uploadRegistrationFiles(userId || "999", {
+          // const files = await uploadRegistrationFiles(userId || "999", {
+          await uploadRegistrationFiles(userId || "999", {
             idFront,
             idBack,
             passportFile,
@@ -143,13 +142,20 @@ export default function Page() {
               : allFields.signaturePng) as File | undefined,
           });
           // console.info("[FILES UPLOADED]", files);
+
+          toast.dismiss(idMsj);
           notify.success(resp.message || "¡Formulario enviado!");
-          form.reset();
-          stepper.reset();
+          //
+          setTimeout(() => {
+            form.reset();
+            stepper.reset();
+          }, 100);
+          //
           return;
         } else {
           // console.error(resp.message);
           // alert(resp.message || "Error enviando el formulario");
+          toast.dismiss(idMsj);
           notify.error(resp.message ?? "No se pudo completar el registro");
           return;
         }
@@ -158,25 +164,30 @@ export default function Page() {
       //
       if (stepper.isFirst) {
         // 1) Validación: ¿ya existe usuario con este documento?
-        const id = toast.loading("Validando documento de identidad…");
+        idMsj = toast.loading("Validando datos, un momento por favor.");
         const docType = allFields.documentType;
         const docNumber = allFields.documentNumber;
+        const email = allFields.email;
 
-        const existingUser = await getUserByDni(docType, docNumber);
-
-        if (existingUser) {
+        const response: ResponseData<boolean> = await getUserByDni(
+          docType,
+          docNumber,
+          email,
+        );
+        // console.warn(response);
+        toast.dismiss()
+        if (response.status == 200 && response.data === true) {
           // La API respondió 200 con JSON: el usuario ya existe -> NO continuar
-          form.setError("documentNumber" as any, {
+          let nameInput = "documentNumber";
+          if (response.message?.includes("corre")) {
+            nameInput = "email";
+          }
+
+          form.setError(nameInput as any, {
             type: "manual",
-            message:
-              "Ya existe un usuario registrado con este documento en el sistema.",
+            message: response.message,
           });
 
-          notify.error(
-            "Ya existe un usuario registrado con este documento. No es posible continuar con un nuevo registro. Por favor comunícate con soporte de ser necesario."
-          );
-
-          toast.dismiss(id);
           return;
         }
       }
@@ -186,12 +197,9 @@ export default function Page() {
     } catch (err) {
       console.error(err);
       notify.error("Ocurrió un problema. Intenta de nuevo.");
-      // form.setError("root", {
-      //   type: "manual",
-      //   message: "Error procesando la solicitud. Intenta de nuevo.",
-      // });
     } finally {
       setIsSubmitting(false);
+      // toast.dismiss(idMsj);
     }
   };
 

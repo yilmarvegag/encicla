@@ -78,7 +78,7 @@ export function AddressFields() {
           <input
             className={`w-full input ${errors.viaNumero ? "input-error" : ""}`}
             {...register("viaNumero")}
-            placeholder="47"
+            placeholder="57"
             inputMode="numeric"
             pattern="[0-9]*"
           />
@@ -113,7 +113,7 @@ export function AddressFields() {
           <input
             className={`w-full input ${errors.numero ? "input-error" : ""}`}
             {...register("numero")}
-            placeholder="61"
+            placeholder="30"
             inputMode="numeric"
             pattern="[0-9]*"
           />
@@ -149,7 +149,7 @@ export function AddressFields() {
           <input
             className={`w-full input ${errors.compNum ? "input-error" : ""}`}
             {...register("compNum")}
-            placeholder="30"
+            placeholder="78"
             inputMode="numeric"
             pattern="[0-9]*"
           />
@@ -174,7 +174,7 @@ export function AddressFields() {
           <input
             className={`w-full input ${errors.apto ? "input-error" : ""}`}
             {...register("apto")}
-            placeholder="apto 302"
+            placeholder="Apto 506, Casa 23, Interior 5, etc."
           />
           {errors.apto && (
             <p className="text-red-500 text-sm mt-1">{errors.apto.message}</p>

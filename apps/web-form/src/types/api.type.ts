@@ -9,8 +9,8 @@ export interface ResponseData<T> {
     details?: string;
 }
 
-export interface ResponseDataOld {
+export interface ApiResponseLegacy<T = unknown> {
     isSuccess?: boolean;
     message?: string;
-    result?: boolean;
+    result?: T;
 }

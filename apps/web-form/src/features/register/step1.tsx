@@ -181,6 +181,7 @@ export function Step1() {
             maxLength={4}
             className={`w-full input ${errors.pin ? "input-error" : ""}`}
             placeholder="****"
+            autoComplete="on"
             {...register("pin")}
           />
           {errors.pin && (
