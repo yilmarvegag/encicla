@@ -8,7 +8,6 @@ import { BiometricCapture } from "./biometric-capture";
 import { IdDocsUploader } from "./id-docs-uploader";
 import { useStepper } from "./stepper";
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
 
 // union y type guard para documentType
 const DOC_TYPES = ["CC", "TI", "CE", "PA"] as const;
@@ -109,6 +108,8 @@ export function Step2() {
               <QuestionMarkCircleIcon className="h-5 w-5" />
             </button>
           </div>
+
+          <input type="hidden" {...register("civicaNumber")} />
 
           {showCivicaHelp && (
             <div className="mt-2 col-span-full rounded-xl border border-slate-700 bg-slate-800/70 p-3">

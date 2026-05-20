@@ -202,7 +202,7 @@ export function Step1() {
             <input
               type="checkbox"
               {...register("habeas")}
-              className={`h-5 w-5 rounded ${errors.habeas ? "accent-red-600" : "accent-sky-500"}`}
+              className={`h-5 w-5 rounded ${errors.habeas ? "accent-red-600" : "accent-[#0175ca]"}`}
             />
             Acepto la
             <a
@@ -227,7 +227,7 @@ export function Step1() {
             <input
               type="checkbox"
               {...register("terms")}
-              className={`h-5 w-5 rounded ${errors.terms ? "accent-red-600" : "accent-sky-500"}`}
+              className={`h-5 w-5 rounded ${errors.terms ? "accent-red-600": "accent-[#0175ca]"}`}
             />
             Acepto los
             <a

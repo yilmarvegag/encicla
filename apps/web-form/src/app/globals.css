@@ -1,43 +1,57 @@
 @import "tailwindcss";
 @import "react-toastify/dist/ReactToastify.css";
 
-
 :root {
-  color-scheme: white;
+  color-scheme: #0074c5;
 }
 
 .bg-encicla {
-  background-color: #0074C5;
+  background-color: #ffffff;
 }
 
 /* ------- Accesibilidad móvil ------- */
 /* Evita zoom forzado en iOS cuando focusea inputs: font-size >= 16px */
-input, select, textarea { font-size: 16px; }
+input,
+select,
+textarea {
+  font-size: 16px;
+}
 
 /* Botones e inputs con área táctil mínima (44px) */
-.btn, .input { min-height: 44px; }
+.btn,
+.input {
+  min-height: 44px;
+}
+
+label{
+  @apply text-black;
+}
 
 /* body {
   @apply bg-slate-900 text-slate-100;
 } */
 
 .input {
-  @apply w-full rounded-xl bg-slate-800 border border-slate-700 px-4 py-2 outline-none focus:ring-2 focus:ring-sky-500 transition-colors duration-200;
+  @apply w-full rounded-xl border border-slate-500 bg-white px-4 py-3 text-black outline-none transition;
+}
+
+.input:focus {
+  @apply ring-2 ring-[#0175ca] border-[#0175ca];
 }
 
 .input-error {
-  @apply border-red-600 border-2 focus:ring-red-600;
+  @apply border-red-600 border-2 focus:ring-red-600 bg-red-100;
 }
 
 .btn {
-  @apply inline-flex items-center justify-center rounded-xl px-4 py-2 bg-sky-600 hover:bg-sky-500 active:bg-sky-700;
+  @apply inline-flex items-center justify-center rounded-xl px-4 py-2 bg-[#0175ca] hover:bg-[#0161a8] active:bg-[#0189e0];
 }
 
 .btn-icon {
   @apply inline-flex items-center justify-center rounded-full
-         h-10 w-10 bg-sky-600 hover:bg-sky-500 active:bg-sky-700
+         h-10 w-10 bg-[#0175ca] hover:bg-[#0161a8] active:bg-[#0189e0]
          disabled:opacity-50 disabled:cursor-not-allowed
-         focus:outline-none focus:ring-2 focus:ring-sky-500;
+         focus:outline-none focus:ring-2 focus:ring-[#0175ca];
 }
 
 /* ------- Helpers responsive ------- */
@@ -78,7 +92,7 @@ input, select, textarea { font-size: 16px; }
 }
 
 .btn-primary {
-  @apply bg-sky-600 text-white hover:bg-sky-700;
+  @apply bg-[#0175ca] hover:bg-[#0161a8] text-white;
 }
 
 .btn-secondary {
@@ -91,3 +105,5 @@ input, select, textarea { font-size: 16px; }
     @apply px-4;
   }
 }
+
+

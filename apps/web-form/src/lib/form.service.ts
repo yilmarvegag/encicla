@@ -37,6 +37,19 @@ export async function getUserByDni(
 
 // ---------- STEP 2 ----------
 
+export async function getCivicaNumber(documentType: string,documentNumber: string
+): Promise<ResponseData<string>> {
+  const resp = await apiService.get<ResponseData<string>>(
+    `/users/GetCivicaNumber?dni=${encodeURIComponent(documentNumber)}&typeDni=${encodeURIComponent(documentType)}`
+  );
+
+  if (resp.status !== 200) {
+    throw new Error(resp.message || "Error consultando la tarjeta Cívica");
+  }
+
+  return resp;
+}
+
 // ---------- STEP 3 ----------
 
 export type UserByDniResponse = {

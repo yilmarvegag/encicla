@@ -184,7 +184,7 @@ export function AddressFields() {
 
       <div>
         <label className="text-sm font-bold">Dirección Completa:</label>
-        <div className="mt-1 rounded-lg bg-slate-800 px-3 py-2 border border-slate-700 text-sm">
+        <div className="mt-1 rounded-lg bg-gray-300 input text-sm">
           {watch("address")}
         </div>
       </div>
