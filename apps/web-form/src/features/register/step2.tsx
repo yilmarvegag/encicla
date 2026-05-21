@@ -112,8 +112,8 @@ export function Step2() {
           <input type="hidden" {...register("civicaNumber")} />
 
           {showCivicaHelp && (
-            <div className="mt-2 col-span-full rounded-xl border border-slate-700 bg-slate-800/70 p-3">
-              <p className="text-xs text-gray-200 mb-2">
+            <div className="mt-2 col-span-full rounded-xl border  p-3">
+              <p className="text-xs text-black mb-2">
                 El número será consultado directamente en la base
                 de datos del sistema, con el número de documento de identidad, ingresado en el paso anterior.
               </p>

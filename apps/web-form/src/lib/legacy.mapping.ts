@@ -1,3 +1,5 @@
+import { date } from "zod";
+
 type Step1 = {
   firstName: string;
   secondName?: string;
@@ -9,6 +11,8 @@ type Step1 = {
   phone: string;
   sex: string;
   pin: string;
+  phoneFijo?: string;
+  dateOfBirth: string;
 };
 
 type Step2 = {
@@ -35,6 +39,8 @@ type Step3 = {
   emergencyName: string;
   emergencyPhone: string;
   emergencyKinship: string;
+  company?: string;
+  stratum?: string;
 };
 
 function mapDocPrefix(documentType: Step1["documentType"]) {
@@ -69,7 +75,6 @@ export function mapFormToLegacyUser(step1: Step1, step2: Step2, step3: Step3) {
 
   const direccion = step3.address;
   const municipio = String(step3.municipio || "");
-  const pais = "CO";
 
   const payload = {
     estrategiaId,
@@ -80,6 +85,8 @@ export function mapFormToLegacyUser(step1: Step1, step2: Step2, step3: Step3) {
     username: step1.email,
     id: crypto.randomUUID(),
     telephone: step1.phone,
+    fechaNacimiento: step1.dateOfBirth,
+    estrato: step3.stratum,
     dni,
     enabled,
     direccion,
@@ -90,23 +97,23 @@ export function mapFormToLegacyUser(step1: Step1, step2: Step2, step3: Step3) {
     // (no los tenemos en el formulario, así que van con valores por defecto)
     numeroCelular: step1.phone,
     pin: step1.pin,
-    fechaNacimiento: "1900-01-01", //default
     sexo: step1.sex,
-    estrato: "0",
     ocupacion: step3.ocupacion,
-    empresa: "NOT_SPECIFIED",
-    telefonoFijo: "NOT_SPECIFIED",
-    departamento: "NOT_SPECIFIED", // default
+
+    empresa: step3.company ?? "",
+    entidad: step3.company ?? "",
+    telefonoFijo: step1.phoneFijo ?? "",
+
+    departamento: "Antioquia", // default
+    pais: "Colombia",
     municipio,
-    pais,
     contacto: step3.emergencyName,
     telefonoContacto: step3.emergencyPhone,
 
     // Tarjeta/rol (no tenemos serial, así que no usamos)
-    numeroTarjeta: "NOT_SPECIFIED",
+    numeroTarjeta: step2.hasCivica ? step2.civicaNumber : "1",
     tipoUso,
     eMail: step1.email,
-    entidad: "NEW_FORM",
     estrategias: [
       {
         disabled: true,

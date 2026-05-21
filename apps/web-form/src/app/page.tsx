@@ -54,13 +54,13 @@ export default function Page() {
     notify.warn("Revisa los campos marcados en obligatorios.");
   };
 
-  const hasCivica = form.watch("hasCivica");
+  const hasCivica = form.watch("hasCivica", "1");
 
   useEffect(() => {
     const loadCivica = async () => {
       // Si desmarca el checkbox, limpiar valor
       if (!hasCivica) {
-        form.setValue("civicaNumber", "");
+        form.setValue("civicaNumber", "1");
         return;
       }
 
@@ -85,13 +85,13 @@ export default function Page() {
           form.setValue("civicaNumber", response.data);
           notify.success("Número de tarjeta cívica encontrado y asociado.");
         } else {
-          form.setValue("civicaNumber", "");
+          form.setValue("civicaNumber", "1");
           notify.warn("No fue posible encontrar una tarjeta cívica asociada.");
         }
       } catch (error) {
         // console.error(error);
         toast.dismiss();
-        form.setValue("civicaNumber", "");
+        form.setValue("civicaNumber", "1");
         notify.error("Error consultando la información de la tarjeta cívica.");
       }
     };
@@ -137,6 +137,8 @@ export default function Page() {
           phone: allFields.phone,
           sex: allFields.sexAssignedAtBirth,
           pin: allFields.pin,
+          phoneFijo: allFields.phoneFijo,
+          dateOfBirth: allFields.dateOfBirth,
           habeas: allFields.habeas,
           terms: allFields.terms,
         };
@@ -153,6 +155,8 @@ export default function Page() {
           comuna: allFields.comuna,
           barrio: allFields.barrio,
           ocupacion: allFields.ocupacion,
+          stratum: allFields.stratum,
+          company: allFields.company,
           emergencyName: allFields.emergencyName,
           emergencyPhone: allFields.emergencyPhone,
           emergencyKinship: allFields.emergencyKinship,
@@ -255,7 +259,7 @@ export default function Page() {
       <div className="relative z-10 flex flex-row items-center justify-between px-6 py-8 bg-[#0074c5] mb-15">
         <div className="flex flex-col items-start">
           <h1 className="text-xl md:text-2xl font-semibold mb-3 md:mb-6 text-white">
-            Proceso de Inscripción
+            Formulario de Inscripción
           </h1>
         </div>
 
@@ -281,7 +285,7 @@ export default function Page() {
             className="space-y-4 md:space-y-6 border border-gray-500 p-5 rounded-3xl shadow-sm"
           >
             {/* Header con pasos responsive */}
-            <StepsHeader currentIndex={currentIndex} />
+            <StepsHeader currentIndex={2} />
 
             {/* Contenido del paso con padding responsivo */}
             <section className="rounded-2xl  p-4 sm:p-6 md:p-8 shadow-sm">
@@ -301,7 +305,7 @@ export default function Page() {
                 ) : (
                   <button
                     type="button"
-                    className="btn btn-secondary sm:w-full lg:w-1/4"
+                    className="btn btn-green sm:w-full lg:w-1/4"
                     onClick={stepper.prev}
                     disabled={stepper.isFirst}
                   >
@@ -312,7 +316,7 @@ export default function Page() {
                   type="submit"
                   disabled={isSubmitting}
                   aria-busy={isSubmitting}
-                  className={`btn btn-primary w-3/4 ${isSubmitting ? "opacity-70 cursor-not-allowed" : "cursor-pointer"}`}
+                  className={`btn btn-green w-3/4 ${isSubmitting ? "opacity-70 cursor-not-allowed" : "cursor-pointer"}`}
                 >
                   {stepper.isLast ? "Guardar información" : "Siguiente"}
                 </button>
@@ -326,7 +330,7 @@ export default function Page() {
                   ) : (
                     <button
                       type="button"
-                      className="btn btn-secondary w-1/4"
+                      className="btn btn-green w-1/4"
                       onClick={stepper.prev}
                       disabled={stepper.isFirst}
                     >
@@ -337,7 +341,7 @@ export default function Page() {
                     type="submit"
                     disabled={isSubmitting}
                     aria-busy={isSubmitting}
-                    className="btn btn-primary w-3/4"
+                    className="btn btn-green w-3/4"
                   >
                     {stepper.isLast ? "Guardar información" : "Siguiente"}
                   </button>

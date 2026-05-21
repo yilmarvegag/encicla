@@ -31,6 +31,7 @@ export type StartRegistrationReq = {
   documentType: string; documentNumber: string;
   email: string; phone: string;
   habeas: boolean; terms: boolean;
+  stratum: string; dateOfBirth: string;
 };
 export type StartRegistrationRes = ResponseAPI<{ registrationId: string }>;
 
@@ -42,6 +43,8 @@ export function startRegistration(req: StartRegistrationReq) {
     DocumentNumber: req.documentNumber,
     Email: req.email,
     Phone: req.phone,
+    Stratum: req.stratum,
+    DateOfBirth: req.dateOfBirth,
     HabeasDataAccepted: req.habeas,
     TermsAccepted: req.terms,
   });

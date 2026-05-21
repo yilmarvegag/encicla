@@ -119,7 +119,7 @@ export function Step1() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1 py-2">
-              Número*
+              Número de documento *
             </label>
             <input
               className={`w-full input ${errors.documentNumber ? "input-error" : ""}`}
@@ -187,6 +187,45 @@ export function Step1() {
           {errors.pin && (
             <p className="text-red-500 text-sm mt-1">
               {errors.pin.message}
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* --fecha de nacimiento y estrado */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1 py-2">
+            Fecha de Nacimiento *
+          </label>
+          <input
+            type="date"
+            inputMode="numeric"
+            maxLength={4}
+            className={`w-full input ${errors.dateOfBirth ? "input-error" : ""}`}
+            placeholder="01/02/2000"
+            autoComplete="on"
+            {...register("dateOfBirth")}
+          />
+          {errors.dateOfBirth && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.dateOfBirth.message}
+            </p>
+          )}
+        </div>       
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1 py-2">
+            Teléfono fijo
+          </label>
+          <input
+            className="w-full input"
+            placeholder="Número de teléfono fijo"
+            {...register("phoneFijo")}
+          />
+          {errors.phoneFijo && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.phoneFijo.message}
             </p>
           )}
         </div>

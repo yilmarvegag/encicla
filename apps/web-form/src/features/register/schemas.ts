@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { date, z } from "zod";
 import { COMP1_OPTIONS, LETRA_OPTIONS } from "../../utils/address";
 
 /* Const */
@@ -22,25 +22,27 @@ export const step1Schema = z
     secondLastName: z.string().optional(),
     documentType: z.enum(
       ["CC", "TI", "CE", "PA"],
-      "Selecciona el tipo de documento"
+      "Selecciona el tipo de documento",
     ),
     documentNumber: z.string().min(8, "Mínimo 8 caracteres"),
     email: emailField,
     emailConfirm: emailField,
     sexAssignedAtBirth: z.enum(
       ["H", "M"],
-      "Selecciona el sexo asignado al nacer"
+      "Selecciona el sexo asignado al nacer",
     ),
+    dateOfBirth: z.string().min(10, "Fecha de nacimiento requerida"),
 
+    phoneFijo: z.string().optional(),
     pin: z
       .string()
       .regex(/^\d{4}$/, "El PIN debe tener exactamente 4 dígitos numéricos"),
     phone: numberPhoneSchema,
+
     habeas: z.boolean().refine((v) => v, "Debes aceptar el Habeas Data"),
     terms: z
       .boolean()
       .refine((v) => v, "Debes aceptar los Términos y Condiciones"),
-
   })
   .superRefine((val, ctx) => {
     if (val.email !== val.emailConfirm) {
@@ -213,6 +215,12 @@ export const step3Schema = z.object({
   municipioNombre: z.string().optional(),
   comuna: z.string().min(1, "Selecciona una comuna"),
   barrio: z.string().min(1, "Selecciona un barrio"),
+
+  stratum: z.enum(
+    ["1", "2", "3", "4", "5", "6"],
+    "Selecciona el estrato socioeconómico",
+  ),
+  company: z.string().optional(),
 
   ocupacion: z.enum([
     "Funcionario Público",

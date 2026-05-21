@@ -17,28 +17,21 @@ export function Step3() {
   const municipio = useWatch({ control, name: "municipio" }) ?? "";
   const barrioSel = useWatch({ control, name: "barrio" }) ?? "";
 
-  const {
-    municipalities,
-    isLoading: loadingMuns,
-  } = useMunicipalities();
+  const { municipalities, isLoading: loadingMuns } = useMunicipalities();
 
-  const {
-    neighborhoods,
-    isLoading: loadingNeis,
-  } = useNeighborhoods(municipio);
+  const { neighborhoods, isLoading: loadingNeis } = useNeighborhoods(municipio);
 
   useEffect(() => {
     register("municipioNombre");
   }, [register]);
-    // cuando cambia el municipio, se busca el nombre y se setea el campo oculto
+  // cuando cambia el municipio, se busca el nombre y se setea el campo oculto
   useEffect(() => {
     const found = municipalities.find(
-      (m) => String(m.id) === String(municipio ?? "")
+      (m) => String(m.id) === String(municipio ?? ""),
     );
     const name = found?.nombre ?? "";
     setValue("municipioNombre", name, { shouldValidate: true });
   }, [municipio, municipalities, setValue]);
-
 
   useEffect(() => {
     setValue("barrio", "", { shouldValidate: true });
@@ -130,7 +123,53 @@ export function Step3() {
         <option>Desempleado</option>
       </select>
 
-        <p className="text-sm font-bold">Información Contacto de Emergencia</p>
+      <p className="text-sm font-bold">Información Contacto de Emergencia</p>
+      <div className="grid md:grid-cols-2 gap-2">
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1 py-2">
+            Estrato socioeconómico *
+          </label>
+          <select
+            className={`w-full input ${
+              errors.stratum ? "input-error" : ""
+            }`}
+            {...register("stratum")}
+          >
+            <option value="">Selecciona una opción</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+          {errors.stratum && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.stratum.message}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1 py-2">
+            Entidad 
+          </label>
+          <input
+            className="w-full input"
+            placeholder="Nombre de la entidad"
+            {...register("company")}
+          />
+          {errors.company && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.company.message}
+            </p>
+          )}
+        </div>
+        </div>
+      </div>
+      <p className="text-sm font-bold">Información Contacto de Emergencia</p>
       <div className="grid md:grid-cols-3 gap-2">
         <div>
           <input
