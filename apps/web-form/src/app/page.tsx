@@ -285,7 +285,7 @@ export default function Page() {
             className="space-y-4 md:space-y-6 border border-gray-500 p-5 rounded-3xl shadow-sm"
           >
             {/* Header con pasos responsive */}
-            <StepsHeader currentIndex={2} />
+            <StepsHeader currentIndex={currentIndex} />
 
             {/* Contenido del paso con padding responsivo */}
             <section className="rounded-2xl  p-4 sm:p-6 md:p-8 shadow-sm">
