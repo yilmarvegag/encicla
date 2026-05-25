@@ -1,0 +1,213 @@
+// apps/web-form/src/features/register/step3.tsx
+"use client";
+import { useEffect } from "react";
+import { useFormContext, useWatch } from "react-hook-form";
+import type { Step3Values } from "./schemas";
+import { AddressFields } from "./address-fields";
+import { useMunicipalities, useNeighborhoods } from "./useMunicipalityCatalog";
+
+export function Step3() {
+  const {
+    register,
+    setValue,
+    control,
+    formState: { errors },
+  } = useFormContext<Step3Values>();
+
+  const municipio = useWatch({ control, name: "municipio" }) ?? "";
+  const barrioSel = useWatch({ control, name: "barrio" }) ?? "";
+
+  const { municipalities, isLoading: loadingMuns } = useMunicipalities();
+
+  const { neighborhoods, isLoading: loadingNeis } = useNeighborhoods(municipio);
+
+  useEffect(() => {
+    register("municipioNombre");
+  }, [register]);
+  // cuando cambia el municipio, se busca el nombre y se setea el campo oculto
+  useEffect(() => {
+    const found = municipalities.find(
+      (m) => String(m.id) === String(municipio ?? ""),
+    );
+    const name = found?.nombre ?? "";
+    setValue("municipioNombre", name, { shouldValidate: true });
+  }, [municipio, municipalities, setValue]);
+
+  useEffect(() => {
+    setValue("barrio", "", { shouldValidate: true });
+    setValue("comuna", "", { shouldValidate: true });
+  }, [municipio, setValue]);
+
+  const onBarrioChange: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
+    const value = e.target.value;
+    setValue("barrio", value, { shouldValidate: true });
+    const found = neighborhoods.find((n) => n.nombre === value);
+    if (found?.tipoDivision)
+      setValue("comuna", found.tipoDivision, { shouldValidate: true });
+  };
+
+  return (
+    <div className="grid gap-4">
+      <AddressFields />
+
+      <p className="text-sm font-bold">Complemento de la dirección</p>
+
+      <div className="grid md:grid-cols-3 gap-2">
+        <div>
+          <select
+            className={`w-full input ${errors.municipio ? "input-error" : ""}`}
+            {...register("municipio")}
+          >
+            <option value="">
+              {loadingMuns
+                ? "Cargando municipios..."
+                : "Selecciona un municipio"}
+            </option>
+            {municipalities.map((m) => (
+              <option key={m.id} value={String(m.id)}>
+                {m.nombre}
+              </option>
+            ))}
+          </select>
+          {errors.municipio && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.municipio.message}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <input
+            className="input"
+            placeholder="Comuna"
+            disabled
+            {...register("comuna")}
+          />
+        </div>
+
+        <div>
+          <select
+            className={`w-full input ${errors.barrio ? "input-error" : ""}`}
+            value={barrioSel}
+            onChange={onBarrioChange}
+            disabled={!municipio || municipio === "0" || loadingNeis}
+          >
+            <option value="">
+              {loadingNeis
+                ? "Cargando barrios..."
+                : municipio && municipio !== "0"
+                  ? "Selecciona un barrio"
+                  : "Selecciona municipio primero"}
+            </option>
+            {neighborhoods.map((b) => (
+              <option key={b.id} value={b.nombre}>
+                {b.nombre}
+              </option>
+            ))}
+          </select>
+          {errors.barrio && (
+            <p className="text-red-500 text-sm mt-1">{errors.barrio.message}</p>
+          )}
+        </div>
+      </div>
+
+      <p className="text-sm font-bold">Profesión / Ocupación</p>
+      <select
+        className={`w-full input ${errors.ocupacion ? "input-error" : ""}`}
+        {...register("ocupacion")}
+      >
+        <option>Funcionario Público</option>
+        <option>Empleado</option>
+        <option>Independiente</option>
+        <option>Estudiante</option>
+        <option>Desempleado</option>
+      </select>
+
+      <p className="text-sm font-bold">Información Contacto de Emergencia</p>
+      <div className="grid md:grid-cols-2 gap-2">
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1 py-2">
+            Estrato socioeconómico *
+          </label>
+          <select
+            className={`w-full input ${
+              errors.stratum ? "input-error" : ""
+            }`}
+            {...register("stratum")}
+          >
+            <option value="">Selecciona una opción</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+          {errors.stratum && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.stratum.message}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1 py-2">
+            Entidad 
+          </label>
+          <input
+            className="w-full input"
+            placeholder="Nombre de la entidad"
+            {...register("company")}
+          />
+          {errors.company && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.company.message}
+            </p>
+          )}
+        </div>
+        </div>
+      </div>
+      <p className="text-sm font-bold">Información Contacto de Emergencia</p>
+      <div className="grid md:grid-cols-3 gap-2">
+        <div>
+          <input
+            className={`w-full input ${errors.emergencyName ? "input-error" : ""}`}
+            placeholder="Nombre contacto"
+            {...register("emergencyName")}
+          />
+          {errors.emergencyName && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.emergencyName.message}
+            </p>
+          )}
+        </div>
+        <div>
+          <input
+            className={`w-full input ${errors.emergencyPhone ? "input-error" : ""}`}
+            placeholder="Teléfono contacto"
+            {...register("emergencyPhone")}
+          />
+          {errors.emergencyPhone && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.emergencyPhone.message}
+            </p>
+          )}
+        </div>
+        <div>
+          <input
+            className={`w-full input ${errors.emergencyKinship ? "input-error" : ""}`}
+            placeholder="Parentesco"
+            {...register("emergencyKinship")}
+          />
+          {errors.emergencyKinship && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.emergencyKinship.message}
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
