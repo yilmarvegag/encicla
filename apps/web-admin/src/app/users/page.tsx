@@ -58,7 +58,7 @@ const meta = useMemo(() => ({
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="text-2xl font-semibold">Usuarios</h2>
         <input
-          className="input w-72"
+          className="input w-72 bg-white"
           placeholder="Buscar: nombre, email, número documento…"
           value={q}
           onChange={(e) => {

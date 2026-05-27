@@ -1,5 +1,6 @@
 import { apiService } from '@/lib/api.service';
 import type { ApiResponse } from '@/types/api-response';
+import { AttachmentsGrouped } from '@/types/attachments';
 import { Paged } from '@/types/paging';
 import { AdminSummary } from '@/types/summary';
 import type { EnciclaUserDto, UserInputDto, UserOutputDto } from '@/types/user';
@@ -82,5 +83,12 @@ export async function disableUser(id: string) {
 // Traer por id (para edición puntual)
 export async function getUser(userId: string): Promise<EnciclaUserDto> {
   const r = await apiService.get<{ data: EnciclaUserDto }>(`/admin/users/${userId}`);
+  return r.data;
+}
+
+export async function getAttachments(userId: string): Promise<AttachmentsGrouped> {
+  const r = await apiService.get<ApiResponse<AttachmentsGrouped>>(
+    `/blobstorage/user/${userId}/attachments`
+  );
   return r.data;
 }

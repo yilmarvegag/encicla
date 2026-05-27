@@ -5,6 +5,7 @@ import { getRoles } from '@/lib/auth';
 import { ToggleEnabledButton } from './toggle-enabled-button';
 import { EditUserDialog } from './edit-user-dialog';
 import Image from 'next/image';
+import { AttachmentsViewer } from './AttachmentsViewer';
 
 const isAdmin = getRoles().map(r => r.toLowerCase()).includes('administrador');
 
@@ -26,12 +27,13 @@ export const userColumns: ColumnDef<UserOutputDto>[] = [
     cell: ({ row }) => {
       const r = row.original;
       return (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <Image
             src={r.avatarUrl}
             alt="Imagen de usuario"
             width={32}
             height={32}
+            unoptimized={r.avatarUrl.startsWith('/')}
             className="size-8 rounded-full border border-slate-700 object-cover"
           />
           <div>
@@ -88,6 +90,7 @@ function RowActions({
     <div className="flex gap-2">
       <EditUserDialog userId={row.id} onSaved={() => table.options.meta?.onChanged?.()} />
       <ToggleEnabledButton enabled={isEnabled} row={row} table={table} />
+      <AttachmentsViewer userId={row.id} />
     </div>
   );
 }

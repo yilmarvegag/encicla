@@ -20,7 +20,7 @@ export function TopBar() {
   }
   
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-800 bg-slate-900/80 backdrop-blur">
+    <header className="sticky top-0 z-20 border-b border-slate-800 bg-encicla backdrop-blur">
       <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
         <h1 className="font-semibold">Encicla — Admin</h1>
         <button onClick={onLogout} className="rounded-lg bg-slate-800 px-3 py-1.5 hover:bg-red-500">
