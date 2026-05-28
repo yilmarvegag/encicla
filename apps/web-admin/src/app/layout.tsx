@@ -27,7 +27,7 @@ export default async function RootLayout({
   //css - bg-encicla
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} min-h-dvh bg-encicla text-slate-100`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} min-h-dvh bg-[var(--encicla-green)] text-[var(--color-text-primary)]`}>
         <TopBar />
         {children}
       </body>

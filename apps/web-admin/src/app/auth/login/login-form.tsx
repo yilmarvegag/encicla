@@ -26,15 +26,15 @@ export default function LoginForm({ redirect }: { redirect: string }) {
   }
 
   return (
-    <main className="min-h-dvh grid place-items-center p-6">
-      <form onSubmit={onSubmit} className="w-full max-w-sm rounded-2xl border border-slate-800 p-6 bg-slate-900">
+    <main className="min-h-dvh grid place-items-center p-6 bg-encicla-blue">
+      <form onSubmit={onSubmit} className="w-full max-w-sm rounded-2xl border border-slate-800 p-6 bg-encicla-green">
         <Image src="https://encicla-portal-prd-staging-fxhth4dnh3b9fqfr.eastus2-01.azurewebsites.net/wp-content/uploads/2025/09/Logo-encicla.svg" alt="Encicla" width={300} height={250} className="mx-auto mb-6" />
         <h1 className="text-xl font-semibold mb-4">Encicla Admin — Iniciar sesión</h1>
         <div className="grid gap-3">
           <input className="input" placeholder="Usuario" value={username} onChange={(e)=>setUser(e.target.value)} />
           <input className="input" placeholder="Contraseña" type="password" value={password} onChange={(e)=>setPass(e.target.value)} />
-          {err && <div className="text-sm text-rose-400">{err}</div>}
-          <button className="btn bg-[#0073c581] hover:bg-[#0074C5] cursor-pointer" disabled={loading || !username || !password}>
+          {err && <div className="text-sm font-bold text-[var(--encicla-danger)]">{err}</div>}
+          <button className="btn btn-primary hover:bg-[var(--encicla-blue)] cursor-pointer border-slate-800" disabled={loading || !username || !password}>
             {loading ? 'Ingresando…' : 'Ingresar'}
           </button>
         </div>

@@ -47,7 +47,7 @@ function FileCard({ file }: { file: AttachmentFile }) {
           <p className="truncate text-xs font-medium text-slate-200">
             {file.fileName}
           </p>
-          <p className="text-xs text-black">{fmtSize(file.sizeBytes)}</p>
+          <p className="text-xs text-white">{fmtSize(file.sizeBytes)}</p>
         </div>
       </div>
 

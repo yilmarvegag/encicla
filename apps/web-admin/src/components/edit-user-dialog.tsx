@@ -68,13 +68,13 @@ export function EditUserDialog({
 
   return (
     <>
-      <button className="btn cursor-pointer text-xs font-bold bg-sky-600 hover:bg-sky-500" onClick={openDialog}>Editar</button>
+      <button className="btn btn-primary" onClick={openDialog}>Editar</button>
       {open && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4">
-          <div className="w-full max-w-2xl rounded-2xl bg-slate-900 border border-slate-700 p-4">
+        <div className="fixed inset-0 z-50 grid place-items-center p-4 bg-black/70">
+          <div className="w-full max-w-2xl rounded-2xl bg-white text-black border border-slate-700 p-4">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-lg font-semibold">Editar usuario</h3>
-              <button className="btn hover:bg-red-700 bg-red-500 cursor-pointer" onClick={() => setOpen(false)}>Cerrar</button>
+              <button className="btn btn-danger" onClick={() => setOpen(false)}>Cerrar</button>
             </div>
 
             <div className="grid gap-3">
@@ -126,8 +126,8 @@ export function EditUserDialog({
               </div>
 
               <div className="flex justify-end gap-3 mt-2">
-                <button className="btn bg-slate-700 hover:bg-slate-600" onClick={() => setOpen(false)}>Cancelar</button>
-                <button className="btn bg-[#0073c581] hover:bg-[#0074C5] cursor-pointer" onClick={save} disabled={busy}>{busy ? 'Guardando…' : 'Guardar'}</button>
+                <button className="btn bg-slate-500 hover:bg-slate-700" onClick={() => setOpen(false)}>Cancelar</button>
+                <button className="btn btn-success" onClick={save} disabled={busy}>{busy ? 'Guardando…' : 'Guardar'}</button>
               </div>
             </div>
           </div>
