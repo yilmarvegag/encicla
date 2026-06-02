@@ -20,14 +20,16 @@ bash `
 npm i -g pnpm@9
 `
 
+![alt text](image.png)
+
 ### Confirm version of pnpm
 bash `
-nnpm -v
+pnpm -v
 `
 
 ## install dependencies by project
 bash `
-pnpm -F web-form/admin install
+pnpm -F web-form or web-admin install
 `
 
 ## Run App(in this case web form, i would stay in /encicla)

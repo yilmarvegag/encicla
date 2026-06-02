@@ -37,10 +37,10 @@ export async function getUserByDni(
 
 // ---------- STEP 2 ----------
 
-export async function getCivicaNumber(documentType: string,documentNumber: string
+export async function getSerial(documentType: string,documentNumber: string
 ): Promise<ResponseData<string>> {
   const resp = await apiService.get<ResponseData<string>>(
-    `/users/GetCivicaNumber?dni=${encodeURIComponent(documentNumber)}&typeDni=${encodeURIComponent(documentType)}`
+    `/users/GetSerial?dni=${encodeURIComponent(documentNumber)}&typeDni=${encodeURIComponent(documentType)}`
   );
 
   if (resp.status !== 200) {

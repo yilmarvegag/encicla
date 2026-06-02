@@ -13,7 +13,7 @@ import { Step3 } from "@/features/register/step3";
 // import { checkDocumentExists, sendOtp, submitRegistration, verifyOtp } from "@/lib/form.service";
 import {
   extractIdFromResponse,
-  getCivicaNumber,
+  getSerial,
   getUserByDni,
   // attachRoleToUser,
   submitRegistration,
@@ -72,7 +72,7 @@ export default function Page() {
 
         notify.info("Consultando número de tarjeta cívica...");
 
-        const response: ResponseData<string> = await getCivicaNumber(
+        const response: ResponseData<string> = await getSerial(
           docType,
           docNumber,
         );
