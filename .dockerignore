@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+.github
+.vscode
+
+apps/web-admin/.next
+apps/web-form/.next
+
+*.log
+.env
+.env.local

@@ -41,3 +41,9 @@ pnpm -F web-form dev
 bash `
 pnpm -F web-form add @namepackage
 `
+# For deployment
+The tag example 1.0.7
+
+bash `
+pnpm deploy:web-form tag
+`

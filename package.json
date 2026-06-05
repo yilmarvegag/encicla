@@ -8,7 +8,9 @@
   "scripts": {
     "dev:web-form": "pnpm --filter web-form dev",
     "dev:web-admin": "pnpm --filter web-admin dev",
-    "dev": "concurrently -k \"pnpm dev:api\" \"pnpm dev:web-form\" \"pnpm dev:web-admin\""
+    "dev": "concurrently -k \"pnpm dev:api\" \"pnpm dev:web-form\" \"pnpm dev:web-admin\"",
+    "deploy:web-admin": "powershell -ExecutionPolicy Bypass -File deploy-azure.ps1 web-admin",
+    "deploy:web-form": "powershell -ExecutionPolicy Bypass -File deploy-azure.ps1 web-form"
   },
   "devDependencies": {
     "concurrently": "^9.0.0"
