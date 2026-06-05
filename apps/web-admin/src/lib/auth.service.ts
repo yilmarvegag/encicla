@@ -47,7 +47,7 @@ export function extractRolesFromResponse(res: CreateTokenResponse): string[] {
   // 4) Fallback temporal si sigue vacío
   if (roles.length === 0) {
     console.warn('No se detectaron roles para el usuario, aplicando fallback temporal');
-    if (res.user?.email?.toLowerCase() === 'yilmarvegag@outlook.com') return ['administrador'];
+    if (res.user?.email?.endsWith('@metropol.gov.co')) return ['administrador'];
     return ['monitor'];
   }
 
