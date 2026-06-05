@@ -1,4 +1,4 @@
-import { date, z } from "zod";
+import { z } from "zod";
 import { COMP1_OPTIONS, LETRA_OPTIONS } from "../../utils/address";
 
 /* Const */

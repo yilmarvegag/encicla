@@ -42,7 +42,7 @@ export async function getSerial(documentType: string,documentNumber: string
   const resp = await apiService.get<ResponseData<string>>(
     `/users/GetSerial?dni=${encodeURIComponent(documentNumber)}&typeDni=${encodeURIComponent(documentType)}`
   );
-
+  
   if (resp.status !== 200) {
     throw new Error(resp.message || "Error consultando la tarjeta Cívica");
   }

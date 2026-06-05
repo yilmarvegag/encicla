@@ -13,7 +13,7 @@ export function dataUrlToFile(dataUrl: string, filename: string): File {
 }
 
 // Si pasas string (dataURL) o File | undefined ⇒ devuelve File | undefined
-export function ensureFile(v: unknown, filename: string, mime?: string): File | undefined {
+export function ensureFile(v: unknown, filename: string): File | undefined {
   if (!v) return undefined;
   if (typeof v === "string" && v.startsWith("data:")) return dataUrlToFile(v, filename);
   if (v instanceof File) return v;

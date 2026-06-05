@@ -8,7 +8,7 @@ param(
 
 # ==================== CONFIGURACIÓN ====================
 $IMAGE_NAME     = "encicla-"+$AppName
-$ACR_NAME       = "acrenciclaprd"               # sin .azurecr.io
+$ACR_NAME       = "acrenciclaprd"
 $CONTAINER_APP  = "encicla-"+$AppName+"-prd"         
 $RESOURCE_GROUP = "rg-encicla-web-prd"
 $REGISTRY = "$ACR_NAME.azurecr.io"
@@ -23,35 +23,39 @@ $API_URL = "https://webapp.metropol.gov.co/pruebawsencicla/api"
 switch ($AppName) {
 
     "web-form" {
-        $EnvVars = @{
-            NEXT_PUBLIC_API_BASE_URL        = $API_URL
-            NEXT_PUBLIC_SECONDS_READ_PDF    ="52"
-            NEXT_PUBLIC_FACE_WASM_URL       ="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
-            NEXT_PUBLIC_FACE_MODEL_URL      ="https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite"
-            NEXT_PUBLIC_FACE_DELEGATE       ="CPU"
-        }
+        $env:NEXT_PUBLIC_API_BASE_URL = $API_URL
+        $env:NEXT_PUBLIC_SECONDS_READ_PDF = "52"
+        $env:NEXT_PUBLIC_FACE_WASM_URL = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
+        $env:NEXT_PUBLIC_FACE_MODEL_URL = "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite"
+        $env:NEXT_PUBLIC_FACE_DELEGATE = "CPU"
     }
 
     "web-admin" {
-        $EnvVars = @{
-            NEXT_PUBLIC_API_BASE_URL = $API_URL
-        }
+        $env:NEXT_PUBLIC_API_BASE_URL = $API_URL
     }
-}
-
-$EnvString = $EnvVars.GetEnumerator() | ForEach-Object {
-    "$($_.Key)=$($_.Value)"
 }
 
 Write-Host "Iniciando deployment a Azure Container Apps..." -ForegroundColor Cyan
 
 
+# Write-Host "================================="
+# Write-Host "Variables de entorno"
+# Write-Host "================================="
+
+# Get-ChildItem Env:NEXT_PUBLIC*
+
+# Write-Host "================================="
+
+# Write-Host "Docker Compose Config:" -ForegroundColor Yellow
+
+# docker compose config
+
 # 1. Login a Azure
-az account show > $null 2>&1
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "Iniciando login a Azure..." -ForegroundColor Yellow
-    az login
-}
+# az account show > $null 2>&1
+# if ($LASTEXITCODE -ne 0) {
+#     Write-Host "Iniciando login a Azure..." -ForegroundColor Yellow
+#     az login
+# }
 
 # 2. Login al Container Registry
 Write-Host "Login al ACR $ACR_NAME" -ForegroundColor Yellow
@@ -104,6 +108,13 @@ docker tag $FULL_IMAGE $REGISTRY/$FULL_IMAGE
 Write-Host "Subiendo imagen a ACR..." -ForegroundColor Yellow
 docker push $FULL_IMAGE
 
+Write-Host "--image: "$REGISTRY/$FULL_IMAGE -ForegroundColor White
+Write-Host "--image: "$FULL_IMAGE -ForegroundColor White
+
+if ($LASTEXITCODE -ne 0) {
+    throw "Error al subir la imagen al Azure Container Registry"
+}
+
 Write-Host "Imagen subida: $FULL_IMAGE" -ForegroundColor Green
 
 # 5. Actualizar el Container App
@@ -111,7 +122,9 @@ Write-Host "Actualizando Azure Container App $CONTAINER_APP" -ForegroundColor Ye
 
 Write-Host "Variables para el Contanedor: $EnvString" -ForegroundColor Red
 
-$REVISION_SUFFIX = "v" + (Get-Date -Format "yyyyMMdd-HHmmss")
+# $REVISION_SUFFIX = "v" + (Get-Date -Format "yyyyMMdd-HHmmss")
+
+#     --revision-suffix $REVISION_SUFFIX
 
 if (-not $EnvVars) {
     throw "No se configuraron variables para $AppName"
@@ -120,8 +133,11 @@ if (-not $EnvVars) {
 az containerapp update `
     --name $CONTAINER_APP `
     --resource-group $RESOURCE_GROUP `
-    --image $REGISTRY/$FULL_IMAGE `
-    --revision-suffix $REVISION_SUFFIX
+    --image $REGISTRY/$FULL_IMAGE
+
+if ($LASTEXITCODE -ne 0) {
+    throw "Error actualizando Azure Container App"
+}
 
 Write-Host "`n Deployment completado exitosamente!" -ForegroundColor Green
 

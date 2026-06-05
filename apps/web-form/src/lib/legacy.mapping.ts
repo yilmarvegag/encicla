@@ -1,5 +1,3 @@
-import { date } from "zod";
-
 type Step1 = {
   firstName: string;
   secondName?: string;
