@@ -21,7 +21,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           <li>
             <Link
               href="/"
-              className="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200 hover:dark:bg-gray-900"
+              className="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[var(--encicla-green)]"
             >
               General
             </Link>
@@ -29,7 +29,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           <li>
             <Link
               href="/users"
-              className="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200 hover:dark:bg-gray-900"
+              className="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[var(--encicla-green)]"
             >
               Usuarios Encicla
             </Link>
@@ -37,7 +37,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           <li>
             <Link
               href="/"
-              className="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200 hover:dark:bg-gray-900"
+              className="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[var(--encicla-green)]"
             >
               <button className="hover:cursor-pointer" onClick={onLogout}>
                 Cerrar sesión

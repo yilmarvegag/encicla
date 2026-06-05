@@ -33,13 +33,13 @@ function TableInner<TData>({ columns, data, emptyMessage = 'Sin registros', meta
   const rows = table.getRowModel().rows;
 
   return (
-    <div className="rounded-xl border border-slate-800 overflow-hidden">
-      <table className="min-w-full text-sm">
+    <div className="w-full overflow-hidden rounded-md border border-slate-700">
+      <table className="min-w-full text-sm table-fixed">
         <thead className="bg-slate-800">
           {headerGroups.map((hg) => (
             <tr key={hg.id}>
               {hg.headers.map((h) => (
-                <th key={h.id} className="px-3 py-2 text-left font-medium">
+                <th key={h.id} className="p-3 text-left font-medium">
                   {h.isPlaceholder ? null : flexRender(h.column.columnDef.header, h.getContext())}
                 </th>
               ))}

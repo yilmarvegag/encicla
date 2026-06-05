@@ -1,11 +1,231 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
-:root { color-scheme: dark; }
-body { @apply bg-slate-900 text-slate-100; }
-.input { @apply w-full rounded-xl bg-slate-800 border border-slate-700 px-4 py-2 outline-none focus:ring-2 focus:ring-sky-500; }
-.btn { @apply inline-flex items-center justify-center rounded-xl px-4 py-2 active:bg-sky-700; }
-.badge { @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs border; }
-
-.bg-encicla {
-  background-color: #0074C5;
+/* ─── Gotham no está en Google Fonts (es propietaria).
+   Alternativa libre más cercana: Nunito Sans o se carga como @font-face
+   si tienes el archivo. Acá dejo el @font-face listo para cuando la tengas. ─── */
+/*
+@font-face {
+  font-family: 'Gotham';
+  src: url('/fonts/Gotham-Book.woff2') format('woff2');
+  font-weight: 400;
 }
+@font-face {
+  font-family: 'Gotham';
+  src: url('/fonts/Gotham-Bold.woff2') format('woff2');
+  font-weight: 700;
+}
+*/
+
+/* ══════════════════════════════════════════
+   TOKENS DE MARCA ENCICLA
+   Uso: var(--encicla-blue), etc.
+   ══════════════════════════════════════════ */
+:root {
+  color-scheme: dark;
+
+  /* ── Colores principales ── */
+  --encicla-blue:        #0074C5;   /* PANTONE 3005C */
+  --encicla-blue-80:     #3390D1;
+  --encicla-blue-60:     #66ABDC;
+  --encicla-blue-40:     #99C8E8;
+  --encicla-blue-20:     #CCE4F3;
+
+  --encicla-green:       #8EB73C;   /* PANTONE 376C */
+  --encicla-green-80:    #A5C563;
+  --encicla-green-60:    #BBD38A;
+  --encicla-green-40:    #D2E2B1;
+  --encicla-green-20:    #E8F0D8;
+
+  /* ── Grises institucionales (máx 70%, sin negro absoluto) ── */
+  --encicla-gray-70:     #4D4D4D;
+  --encicla-gray-60:     #666666;
+  --encicla-gray-40:     #999999;
+  --encicla-gray-20:     #CCCCCC;
+
+  /* ── Fondos dark para admin ── */
+  --encicla-bg:          #0A1628;   /* azul muy oscuro — fondo base */
+  --encicla-bg-card:     #0F1E38;   /* tarjetas / paneles */
+  --encicla-bg-surface:  #152540;   /* filas, inputs, elementos elevados */
+  --encicla-bg-hover:    #1A2E50;   /* hover de filas */
+  --encicla-border:      #1E3557;   /* bordes sutiles */
+
+  /* ── Texto ── */
+  --encicla-text:        #F0F6FC;   /* texto principal */
+  --encicla-text-muted:  #8BA3C0;   /* texto secundario */
+  --encicla-text-dim:    #4D6A8A;   /* placeholders, deshabilitado */
+
+  /* ── Semánticos ── */
+  --encicla-success:     #8EB73C;   /* verde = ok / habilitado */
+  --encicla-danger:      #E8445A;   /* rojo para deshabilitar */
+  --encicla-warning:     #F5A623;
+}
+
+/* ══════════════════════════════════════════
+   CLASES UTILITARIAS REUTILIZABLES
+   ══════════════════════════════════════════ */
+
+/* Fondo base de la app */
+body {
+  background-color: var(--encicla-bg);
+  color: var(--encicla-text);
+  font-family: 'Montserrat', 'Geist Sans', sans-serif;
+}
+
+/* Tipografía de titulares/botones → Gotham o fallback */
+.font-heading {
+  font-family: 'Gotham', 'Nunito Sans', 'Montserrat', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* ── Backgrounds ── */
+.bg-encicla          { background-color: var(--encicla-blue); }
+.bg-encicla-card     { background-color: var(--encicla-bg-card); }
+.bg-encicla-surface  { background-color: var(--encicla-bg-surface); }
+.bg-encicla-blue     { background-color: var(--encicla-blue); }
+.bg-encicla-green    { background-color: var(--encicla-green); }
+
+/* ── Texto ── */
+.text-encicla-blue   { color: var(--encicla-blue); }
+.text-encicla-green  { color: var(--encicla-green); }
+.text-encicla-muted  { color: var(--encicla-text-muted); }
+
+/* ── Bordes ── */
+.border-encicla      { border-color: var(--encicla-border); }
+.border-encicla-blue { border-color: var(--encicla-blue); }
+.border-encicla-green{ border-color: var(--encicla-green); }
+
+/* ── Inputs ── */
+.input {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--encicla-border);
+  background-color: var(--encicla-bg-surface);
+  color: var(--encicla-text);
+  padding: 0.5rem 1rem;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.input::placeholder { color: var(--encicla-text-dim); }
+.input:focus {
+  border-color: var(--encicla-blue);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--encicla-blue) 25%, transparent);
+}
+
+/* ── Botones ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  padding: 0.4rem 1rem;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  transition: filter 0.15s, opacity 0.15s;
+  cursor: pointer;
+}
+.btn:hover  { filter: brightness(1.1); }
+.btn:active { filter: brightness(0.9); }
+
+.btn-primary {
+  background-color: var(--encicla-blue);
+  color: #fff;
+}
+.btn-success {
+  background-color: var(--encicla-green);
+  color: #fff;
+}
+.btn-danger {
+  background-color: var(--encicla-danger);
+  color: #fff;
+}
+.btn-ghost {
+  background-color: var(--encicla-bg-surface);
+  color: var(--encicla-text-muted);
+  border: 1px solid var(--encicla-border);
+}
+
+/* ── Badges de estado ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border: 1px solid;
+}
+.badge-enabled {
+  border-color: var(--encicla-green);
+  color: var(--encicla-green);
+  background-color: color-mix(in srgb, var(--encicla-green) 12%, transparent);
+}
+.badge-disabled {
+  border-color: var(--encicla-danger);
+  color: var(--encicla-danger);
+  background-color: color-mix(in srgb, var(--encicla-danger) 12%, transparent);
+}
+
+/* ── Tabla ── */
+.table-encicla thead tr {
+  background-color: var(--encicla-bg-card);
+  border-bottom: 2px solid var(--encicla-blue);
+}
+.table-encicla thead th {
+  color: var(--encicla-text-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.75rem 1rem;
+}
+.table-encicla tbody tr {
+  border-bottom: 1px solid var(--encicla-border);
+  transition: background-color 0.1s;
+}
+.table-encicla tbody tr:hover {
+  background-color: var(--encicla-bg-hover);
+}
+.table-encicla tbody td {
+  padding: 0.75rem 1rem;
+  color: var(--encicla-text);
+  font-size: 0.875rem;
+}
+
+/* ── Sidebar / nav ── */
+.sidebar-item {
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  color: var(--encicla-text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.15s, color 0.15s;
+  cursor: pointer;
+}
+.sidebar-item:hover {
+  background-color: var(--encicla-bg-surface);
+  color: var(--encicla-text);
+}
+.sidebar-item.active {
+  background-color: color-mix(in srgb, var(--encicla-blue) 20%, transparent);
+  color: var(--encicla-blue);
+  border-left: 3px solid var(--encicla-blue);
+}
+
+/* ── Topbar ── */
+.topbar {
+  background-color: var(--encicla-bg-card);
+  border-bottom: 1px solid var(--encicla-border);
+}
+
+/* ── Accent bar (línea verde decorativa del manual) ── */
+.accent-bar {
+  height: 4px;
+  background: linear-gradient(90deg, var(--encicla-blue), var(--encicla-green));
+  border-radius: 2px;
+}
+
+a, button { cursor: pointer; }

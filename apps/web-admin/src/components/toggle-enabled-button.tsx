@@ -47,7 +47,7 @@ export function ToggleEnabledButton({
 
   return (
     <button
-      className={`btn ${isEnabled ? "bg-rose-600 hover:bg-rose-500" : "bg-green-600 hover:bg-green-500"} disabled:opacity-60`}
+      className={`btn cursor-pointer text-xs font-bold ${isEnabled ? "bg-rose-600 hover:bg-rose-500" : "bg-green-600 hover:bg-green-500"} disabled:opacity-60`}
       onClick={toggle}
       disabled={busy}
       aria-busy={busy}

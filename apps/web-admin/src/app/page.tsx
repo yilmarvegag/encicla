@@ -23,17 +23,13 @@ export default function Dashboard() {
         <div className="opacity-70">Cargando…</div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-black">
             <Card title="Usuarios" value={data.total} />
             <Card title="Habilitados" value={data.habilitados} />
             <Card title="Deshabilitados" value={data.deshabilitados} />
             <Card title="Nuevos (hoy)" value={data.nuevosHoy} />
             <Card title="Nuevos (semana)" value={data.nuevosSemana} />
           </div>
-
-          {/* <div className="mt-6">
-            <a className="btn" href="/users">Ir a la lista de usuarios</a>
-          </div> */}
         </>
       )}
     </Shell>
@@ -42,7 +38,7 @@ export default function Dashboard() {
 
 function Card({ title, value }: { title: string; value: number }) {
   return (
-    <div className="rounded-xl border border-slate-800 p-4">
+    <div className="rounded-xl border bg-white shadow-2xl shadow-gray-500 p-4">
       <div className="text-sm opacity-70">{title}</div>
       <div className="text-2xl font-semibold">{new Intl.NumberFormat('es-CO').format(value)}</div>
     </div>
