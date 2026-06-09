@@ -97,16 +97,16 @@ if ([string]::IsNullOrWhiteSpace($TAG)) {
 
 # 3. Build de la imagen
 Write-Host "Construyendo imagen Docker..." -ForegroundColor Yellow
-$env:IMAGE_TAG = $FULL_IMAGE
+$env:IMAGE_TAG = "$REGISTRY/$FULL_IMAGE"
 docker compose build --no-cache $AppName
 
 # Tageo imagen
 Write-Host "Construyendo el tag de imagen Docker..." -ForegroundColor Green
-docker tag $FULL_IMAGE $REGISTRY/$FULL_IMAGE
+# docker tag $FULL_IMAGE $REGISTRY/$FULL_IMAGE
 
 # 4. Push a Azure Container Registry
 Write-Host "Subiendo imagen a ACR..." -ForegroundColor Yellow
-docker push $FULL_IMAGE
+docker push "$REGISTRY/$FULL_IMAGE"
 
 Write-Host "--image: "$REGISTRY/$FULL_IMAGE -ForegroundColor White
 Write-Host "--image: "$FULL_IMAGE -ForegroundColor White
