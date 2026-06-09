@@ -201,7 +201,8 @@ export default function Page() {
           setTimeout(() => {
             form.reset();
             stepper.reset();
-          }, 100);
+            notify.info("Su inscripción está en proceso de validación, una vez realizada se dará respuesta.", {autoClose:false});
+          }, 200);
           //
           return;
         } else {

@@ -66,7 +66,7 @@ export function mapFormToLegacyUser(step1: Step1, step2: Step2, step3: Step3) {
   
   const estrategiaId = 4;
   const tipoUso = 4;
-  const enabled = true;
+  const enabled = false;
   const passwordHash =
     "AQAAAAEAACcQAAAAEKHCM9oY8vrVAam5QBWFM4n1riu+t+StjelVyv4+GKCikunDMGxV4YbgLV3F0Mz9dw==";
   const nowIso = new Date().toISOString();
@@ -103,7 +103,7 @@ export function mapFormToLegacyUser(step1: Step1, step2: Step2, step3: Step3) {
     telefonoFijo: step1.phoneFijo ?? "",
 
     departamento: "Antioquia", // default
-    pais: "Colombia",
+    pais: "Colombia", //default
     municipio,
     contacto: step3.emergencyName,
     telefonoContacto: step3.emergencyPhone,
