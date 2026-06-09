@@ -24,7 +24,7 @@ switch ($AppName) {
 
     "web-form" {
         $env:NEXT_PUBLIC_API_BASE_URL = $API_URL
-        $env:NEXT_PUBLIC_SECONDS_READ_PDF = "52"
+        $env:NEXT_PUBLIC_SECONDS_READ_PDF = "5"
         $env:NEXT_PUBLIC_FACE_WASM_URL = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
         $env:NEXT_PUBLIC_FACE_MODEL_URL = "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite"
         $env:NEXT_PUBLIC_FACE_DELEGATE = "CPU"
@@ -32,6 +32,7 @@ switch ($AppName) {
 
     "web-admin" {
         $env:NEXT_PUBLIC_API_BASE_URL = $API_URL
+        $env:NEXT_PUBLIC_IDLE_MINUTES = "20"
     }
 }
 
@@ -120,15 +121,17 @@ Write-Host "Imagen subida: $FULL_IMAGE" -ForegroundColor Green
 # 5. Actualizar el Container App
 Write-Host "Actualizando Azure Container App $CONTAINER_APP" -ForegroundColor Yellow
 
-Write-Host "Variables para el Contanedor: $EnvString" -ForegroundColor Red
+Write-Host "Variables para el Contanedor" -ForegroundColor Red
+docker compose config | Select-String "NEXT_PUBLIC" | ForEach-Object { $_.Line } | ForEach-Object { Write-Host $_ -ForegroundColor Red }
+# Write-Host "Variables para el Contanedor: $EnvString" -ForegroundColor Red
 
-# $REVISION_SUFFIX = "v" + (Get-Date -Format "yyyyMMdd-HHmmss")
+# # $REVISION_SUFFIX = "v" + (Get-Date -Format "yyyyMMdd-HHmmss")
 
-#     --revision-suffix $REVISION_SUFFIX
+# #     --revision-suffix $REVISION_SUFFIX
 
-if (-not $EnvVars) {
-    throw "No se configuraron variables para $AppName"
-}
+# if (-not $EnvVars) {
+#     throw "No se configuraron variables para $AppName"
+# }
 
 az containerapp update `
     --name $CONTAINER_APP `

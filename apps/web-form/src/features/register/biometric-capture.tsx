@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 // ─────────────────────────────────────────────────────────────────────────────
 type FaceDetectorLike = {
   detect: (
-    src: HTMLCanvasElement | HTMLVideoElement
+    src: HTMLCanvasElement | HTMLVideoElement,
   ) => Promise<{ detections: object[] }>;
   close?: () => void | Promise<void>;
 };
@@ -19,49 +19,53 @@ async function getFaceDetector(): Promise<FaceDetectorLike> {
   if (detectorPromise) return detectorPromise;
 
   detectorPromise = (async () => {
-    // 1) Nativo si existe
-    const NativeFD: any = (window as any).FaceDetector;
-    if (NativeFD) {
-      const fd = new NativeFD({ fastMode: true, maxDetectedFaces: 1 });
+    try {
+      // 1) Nativo si existe
+      const NativeFD: any = (window as any).FaceDetector;
+      if (NativeFD) {
+        const fd = new NativeFD({ fastMode: true, maxDetectedFaces: 1 });
+        return {
+          detect: async (src) => ({
+            detections: (await fd.detect(src as any)) ?? [],
+          }),
+          close: () => {},
+        };
+      }
+
+      // 2) Fallback MediaPipe (modelo correcto + delegate por env)
+      const { FaceDetector, FilesetResolver } = await import(
+        "@mediapipe/tasks-vision"
+      );
+
+      const wasmUrl =
+        process.env.NEXT_PUBLIC_FACE_WASM_URL ||
+        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm";
+
+      const modelUrl =
+        process.env.NEXT_PUBLIC_FACE_MODEL_URL ||
+        "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite";
+
+      const delegate =
+        (process.env.NEXT_PUBLIC_FACE_DELEGATE as "CPU" | "GPU") || "CPU";
+
+      const filesetResolver = await FilesetResolver.forVisionTasks(wasmUrl);
+      const det = await FaceDetector.createFromOptions(filesetResolver, {
+        baseOptions: { modelAssetPath: modelUrl, delegate }, // CPU por defecto
+        runningMode: "IMAGE",
+        minDetectionConfidence: 0.5,
+      });
+
       return {
-        detect: async (src) => ({
-          detections: (await fd.detect(src as any)) ?? [],
-        }),
-        close: () => {},
+        detect: async (src) => {
+          const res = await det.detect(src as any);
+          return { detections: res?.detections ?? [] };
+        },
+        close: () => det.close(),
       };
+    } catch (e) {
+      detectorPromise = null;
+      throw e;
     }
-
-    // 2) Fallback MediaPipe (modelo correcto + delegate por env)
-    const { FaceDetector, FilesetResolver } = await import(
-      "@mediapipe/tasks-vision"
-    );
-
-    const wasmUrl =
-      process.env.NEXT_PUBLIC_FACE_WASM_URL ??
-      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm";
-
-    const modelUrl =
-      process.env.NEXT_PUBLIC_FACE_MODEL_URL ??
-      "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite";
-
-    const delegate =
-      (process.env.NEXT_PUBLIC_FACE_DELEGATE as "CPU" | "GPU" | undefined) ??
-      "CPU";
-
-    const filesetResolver = await FilesetResolver.forVisionTasks(wasmUrl);
-    const det = await FaceDetector.createFromOptions(filesetResolver, {
-      baseOptions: { modelAssetPath: modelUrl, delegate }, // CPU por defecto
-      runningMode: "IMAGE",
-      minDetectionConfidence: 0.5,
-    });
-
-    return {
-      detect: async (src) => {
-        const res = await det.detect(src as any);
-        return { detections: res?.detections ?? [] };
-      },
-      close: () => det.close(),
-    };
   })();
 
   return detectorPromise;
@@ -86,7 +90,7 @@ export function BiometricCapture({
   // Pide cámara
   useEffect(() => {
     // inicializa en background; silencia errores transitorios
-    getFaceDetector().catch(() => {});
+    // getFaceDetector().catch(() => {});
     let stream: MediaStream | undefined;
 
     (async () => {
